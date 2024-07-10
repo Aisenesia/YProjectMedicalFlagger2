@@ -8,17 +8,17 @@ namespace YProjectMedicalFlagger2
         //Directory
         private void Form1_Load(object sender, EventArgs e)
         {
-            string directoryPath = @"C:\Users\Hakan\source\repos\YProjectMedicalFlagger\YProjectMedicalFlagger\files";
+            string directoryPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\files";//@"C:\Users\Hakan\source\repos\YProjectMedicalFlagger\YProjectMedicalFlagger\files";
             if (Directory.Exists(directoryPath))
             {
                 files = Directory.GetDirectories(directoryPath);
-                
+
 
                 if (files.Length > 0)
                 {
                     foreach (String file in files)
                     {
-                       
+
                         String[] strings = file.Split('\\'); // split the string by '\', makes it easier to select from list
 
                         listBox1.Items.Add(strings.Last());
@@ -31,7 +31,7 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                MessageBox.Show("Directory does not exist.");
+                MessageBox.Show("Directory does not exist: " + directoryPath);
             }
         }
 
@@ -39,28 +39,34 @@ namespace YProjectMedicalFlagger2
         {
 
             InitializeComponent();
-            this.Load += new EventHandler(Form1_Load);
+            this.Load += Form1_Load; // Removed the 'new EventHandler' part
+            selectedFile = new String("");
+            files = new String[0];
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            selectedFile = listBox1.SelectedItem.ToString();
+            if (listBox1.SelectedItem != null)
+            {
+                string sel = listBox1.SelectedItem.ToString() ?? string.Empty; // done to prevent null reference exception
+                selectedFile = sel;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(selectedFile != null)
+            if (selectedFile != null)
             {
-               Form2 form2 = new Form2(selectedFile);
+                Form2 form2 = new Form2(selectedFile);
 
                 form2.Show();
                 //this.Close();
-                
+
             }
         }
         private void InitializeListBox()
         {
-               listBox1 = new ListBox();
+            listBox1 = new ListBox();
             listBox1.FormattingEnabled = true;
             listBox1.Location = new Point(12, 54);
             listBox1.Name = "listBox1";

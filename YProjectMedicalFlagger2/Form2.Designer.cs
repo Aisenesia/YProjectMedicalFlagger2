@@ -34,7 +34,10 @@
             checkedListBox1 = new CheckedListBox();
             richTextBox1 = new RichTextBox();
             label1 = new Label();
-            button1 = new Button();
+            saveButton = new Button();
+            indexLabel = new Label();
+            reMarkButton = new Button();
+            saveMarksButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -42,42 +45,43 @@
             // 
             pictureBox1.Location = new Point(12, 12);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(457, 400);
+            pictureBox1.Size = new Size(609, 550);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // next
             // 
-            next.Location = new Point(375, 426);
+            next.Location = new Point(527, 572);
             next.Name = "next";
             next.Size = new Size(94, 29);
             next.TabIndex = 1;
-            next.Text = "next";
+            next.Text = "Sonraki";
             next.UseVisualStyleBackColor = true;
             next.Click += next_Click;
             // 
             // prev
             // 
-            prev.Location = new Point(12, 426);
+            prev.Location = new Point(12, 572);
             prev.Name = "prev";
             prev.Size = new Size(94, 29);
             prev.TabIndex = 2;
-            prev.Text = "prev";
+            prev.Text = "Önceki";
             prev.UseVisualStyleBackColor = true;
             prev.Click += prev_Click;
             // 
             // checkedListBox1
             // 
             checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Location = new Point(513, 12);
+            checkedListBox1.Location = new Point(878, 12);
             checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(275, 224);
+            checkedListBox1.Size = new Size(275, 378);
             checkedListBox1.TabIndex = 3;
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new Point(513, 292);
+            richTextBox1.Location = new Point(878, 442);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(275, 120);
             richTextBox1.TabIndex = 4;
@@ -86,27 +90,60 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(513, 269);
+            label1.Location = new Point(878, 419);
             label1.Name = "label1";
             label1.Size = new Size(50, 20);
             label1.TabIndex = 5;
             label1.Text = "label1";
+            label1.Click += label1_Click;
             // 
-            // button1
+            // saveButton
             // 
-            button1.Location = new Point(694, 426);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 6;
-            button1.Text = "Save";
-            button1.UseVisualStyleBackColor = true;
+            saveButton.Location = new Point(878, 568);
+            saveButton.Name = "saveButton";
+            saveButton.Size = new Size(94, 29);
+            saveButton.TabIndex = 6;
+            saveButton.Text = "Kaydet";
+            saveButton.UseVisualStyleBackColor = true;
+            saveButton.Click += saveButton_Click;
+            // 
+            // indexLabel
+            // 
+            indexLabel.AutoSize = true;
+            indexLabel.Location = new Point(245, 572);
+            indexLabel.Name = "indexLabel";
+            indexLabel.Size = new Size(132, 20);
+            indexLabel.TabIndex = 7;
+            indexLabel.Text = "Resim bulunamadı";
+            indexLabel.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // reMarkButton
+            // 
+            reMarkButton.Location = new Point(627, 12);
+            reMarkButton.Name = "reMarkButton";
+            reMarkButton.Size = new Size(94, 29);
+            reMarkButton.TabIndex = 8;
+            reMarkButton.Text = "Yeniden";
+            reMarkButton.UseVisualStyleBackColor = true;
+            // 
+            // saveMarksButton
+            // 
+            saveMarksButton.Location = new Point(627, 47);
+            saveMarksButton.Name = "saveMarksButton";
+            saveMarksButton.Size = new Size(94, 29);
+            saveMarksButton.TabIndex = 9;
+            saveMarksButton.Text = "Kayıt";
+            saveMarksButton.UseVisualStyleBackColor = true;
             // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 467);
-            Controls.Add(button1);
+            ClientSize = new Size(1165, 613);
+            Controls.Add(saveMarksButton);
+            Controls.Add(reMarkButton);
+            Controls.Add(indexLabel);
+            Controls.Add(saveButton);
             Controls.Add(label1);
             Controls.Add(richTextBox1);
             Controls.Add(checkedListBox1);
@@ -129,6 +166,9 @@
         private CheckedListBox checkedListBox1;
         private RichTextBox richTextBox1;
         private Label label1;
-        private Button button1;
+        private Button saveButton;
+        private Label indexLabel;
+        private Button reMarkButton;
+        private Button saveMarksButton;
     }
 }
