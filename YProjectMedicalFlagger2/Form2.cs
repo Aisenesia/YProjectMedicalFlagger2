@@ -19,6 +19,9 @@ namespace YProjectMedicalFlagger2
         private string directoryPath;
         private List<string> files;
 
+        private string[] filesFromBefore;
+        private int index;
+
 
 
         private string currentPatientName;
@@ -32,12 +35,14 @@ namespace YProjectMedicalFlagger2
         Dictionary<string, dataNode> dataMap;
         private string[] categories;
 
-        private Dictionary<string, Point[]> pointMap;  
+        private Dictionary<string, Point[]> pointMap;
         private Point lastClickLocation;
 
-        public Form2(String fileName)
+        public Form2(String fileName, string[] files, int index)
         {
             currentPatientName = fileName;
+            this.filesFromBefore = files;
+            this.index = index;
 
             InitializeComponent();
             InitializeFileList();
@@ -263,6 +268,27 @@ namespace YProjectMedicalFlagger2
                 //Point[] points = new Point[0];
                 pointMap.Add(image, new Point[0]);
             }
+        }
+
+        private void nextPatientButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+
+            if(index < filesFromBefore.Length) { 
+                string filename = filesFromBefore[index];
+                String[] strings = filename.Split('\\');
+
+
+
+                Form2 newForm = new Form2(strings.Last(), filesFromBefore, index + 1);
+
+               
+                newForm.Show();
+            }
+            else {
+                MessageBox.Show("No more patients to show.");
+            }
+            
         }
     }
     class dataNode

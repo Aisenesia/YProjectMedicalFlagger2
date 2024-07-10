@@ -57,7 +57,8 @@ namespace YProjectMedicalFlagger2
         {
             if (selectedFile != null)
             {
-                Form2 form2 = new Form2(selectedFile);
+                int index = listBox1.SelectedIndex;
+                Form2 form2 = new Form2(selectedFile, files, index + 1);
 
                 form2.Show();
                 //this.Close();

@@ -38,6 +38,7 @@
             indexLabel = new Label();
             reMarkButton = new Button();
             saveMarksButton = new Button();
+            nextPatientButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -99,7 +100,7 @@
             // 
             // saveButton
             // 
-            saveButton.Location = new Point(878, 568);
+            saveButton.Location = new Point(878, 572);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(94, 29);
             saveButton.TabIndex = 6;
@@ -123,7 +124,7 @@
             reMarkButton.Name = "reMarkButton";
             reMarkButton.Size = new Size(94, 29);
             reMarkButton.TabIndex = 8;
-            reMarkButton.Text = "Yeniden";
+            reMarkButton.Text = "Reset";
             reMarkButton.UseVisualStyleBackColor = true;
             // 
             // saveMarksButton
@@ -135,11 +136,22 @@
             saveMarksButton.Text = "Kayıt";
             saveMarksButton.UseVisualStyleBackColor = true;
             // 
+            // nextPatientButton
+            // 
+            nextPatientButton.Location = new Point(1059, 572);
+            nextPatientButton.Name = "nextPatientButton";
+            nextPatientButton.Size = new Size(94, 29);
+            nextPatientButton.TabIndex = 10;
+            nextPatientButton.Text = "Sonraki";
+            nextPatientButton.UseVisualStyleBackColor = true;
+            nextPatientButton.Click += nextPatientButton_Click;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1165, 613);
+            Controls.Add(nextPatientButton);
             Controls.Add(saveMarksButton);
             Controls.Add(reMarkButton);
             Controls.Add(indexLabel);
@@ -170,5 +182,6 @@
         private Label indexLabel;
         private Button reMarkButton;
         private Button saveMarksButton;
+        private Button nextPatientButton;
     }
 }
