@@ -1,6 +1,6 @@
 ﻿namespace YProjectMedicalFlagger2
 {
-    partial class Form2
+    partial class PatientFlagger
     {
         /// <summary>
         /// Required designer variable.

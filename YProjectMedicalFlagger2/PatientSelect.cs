@@ -1,6 +1,6 @@
 namespace YProjectMedicalFlagger2
 {
-    public partial class Form1 : Form
+    public partial class PatientSelect : Form
     {
         String[] files;
         String selectedFile;
@@ -35,7 +35,7 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        public Form1()
+        public PatientSelect()
         {
 
             InitializeComponent();
@@ -58,7 +58,7 @@ namespace YProjectMedicalFlagger2
             if (selectedFile != null)
             {
                 int index = listBox1.SelectedIndex;
-                Form2 form2 = new Form2(selectedFile, files, index + 1);
+                PatientFlagger form2 = new PatientFlagger(selectedFile, files, index + 1);
 
                 form2.Show();
                 //this.Close();

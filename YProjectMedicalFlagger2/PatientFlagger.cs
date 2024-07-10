@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace YProjectMedicalFlagger2
 {
-    public partial class Form2 : Form
+    public partial class PatientFlagger : Form
     {
         private static string filesPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\files"; // @"C:\Users\Hakan\source\repos\YProjectMedicalFlagger\YProjectMedicalFlagger\files";
         private string directoryPath;
@@ -39,7 +39,7 @@ namespace YProjectMedicalFlagger2
         private Point lastClickLocation;
         private bool firstClickDone = false;
 
-        public Form2(String fileName, string[] files, int index)
+        public PatientFlagger(String fileName, string[] files, int index)
         {
             currentPatientName = fileName;
             this.filesFromBefore = files;
@@ -304,7 +304,7 @@ namespace YProjectMedicalFlagger2
 
 
 
-                Form2 newForm = new Form2(strings.Last(), filesFromBefore, index + 1);
+                PatientFlagger newForm = new PatientFlagger(strings.Last(), filesFromBefore, index + 1);
 
 
                 newForm.Show();
