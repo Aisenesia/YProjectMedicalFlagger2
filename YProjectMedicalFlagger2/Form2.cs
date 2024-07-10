@@ -37,6 +37,7 @@ namespace YProjectMedicalFlagger2
 
         private Dictionary<string, Point[]> pointMap;
         private Point lastClickLocation;
+        private bool firstClickDone = false;
 
         public Form2(String fileName, string[] files, int index)
         {
@@ -68,6 +69,8 @@ namespace YProjectMedicalFlagger2
 
             imageFiles = files.Where(file => file.EndsWith(".png") || file.EndsWith(".jpg")).ToArray();
             currentIndex = 0;
+            //firstClickDone = false;
+            lastClickLocation = new Point();
         }
 
         private void DisplayCurrentImage()
@@ -79,6 +82,7 @@ namespace YProjectMedicalFlagger2
                 indexLabel.Text = (currentIndex + 1) + "/" + imageFiles.Length;
                 indexLabel.Show();
             }
+            lastClickLocation = new Point();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -234,16 +238,34 @@ namespace YProjectMedicalFlagger2
 
         }
 
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
 
-            Point coordinates = me.Location;
+            // Calculate the actual displayed image size
+            Size imgSize = pictureBox1.Image.Size;
+            Size boxSize = pictureBox1.ClientSize;
 
+            float ratioX = (float)boxSize.Width / imgSize.Width;
+            float ratioY = (float)boxSize.Height / imgSize.Height;
+            float ratio = Math.Min(ratioX, ratioY);
 
-            //draw the line
+            Size displayedImageSize = new Size((int)(imgSize.Width * ratio), (int)(imgSize.Height * ratio));
 
+            // Calculate padding
+            int padX = (boxSize.Width - displayedImageSize.Width) / 2;
+            int padY = (boxSize.Height - displayedImageSize.Height) / 2;
 
+            // Adjust the click coordinates to match the image coordinates
+            int adjustedX = (int)((me.X - padX) / ratio);
+            int adjustedY = (int)((me.Y - padY) / ratio);
+
+            Point coordinates = new Point(adjustedX, adjustedY);
+
+            Debug.WriteLine("X: " + coordinates.X + " Y: " + coordinates.Y);
+
+            // Draw the line
             if (lastClickLocation.IsEmpty)
             {
                 lastClickLocation = coordinates;
@@ -260,6 +282,7 @@ namespace YProjectMedicalFlagger2
             pointMap[imageFiles[currentIndex]].Append(coordinates);
         }
 
+
         private void InitalizePointMap()
         {
             pointMap = new Dictionary<string, Point[]>();
@@ -274,7 +297,8 @@ namespace YProjectMedicalFlagger2
         {
             this.Close();
 
-            if(index < filesFromBefore.Length) { 
+            if (index < filesFromBefore.Length)
+            {
                 string filename = filesFromBefore[index];
                 String[] strings = filename.Split('\\');
 
@@ -282,13 +306,58 @@ namespace YProjectMedicalFlagger2
 
                 Form2 newForm = new Form2(strings.Last(), filesFromBefore, index + 1);
 
-               
+
                 newForm.Show();
             }
-            else {
+            else
+            {
                 MessageBox.Show("No more patients to show.");
             }
+
+        }
+
+
+
+        private void reMarkButton_Click(object sender, EventArgs e)
+        {
+            if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
+            {
+                // Clear the points for the current image
+                pointMap[imageFiles[currentIndex]] = new Point[0];
+
+                // Reset last click location
+                lastClickLocation = new Point();
+
+                // Redraw the image without lines
+                pictureBox1.ImageLocation = imageFiles[currentIndex];
+                pictureBox1.Load();
+            }
+        }
+
+        private void saveMarksButton_Click(object sender, EventArgs e)
+        {
+           
+                if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
+                {
+                    string originalFilePath = imageFiles[currentIndex];
+                    string savePath = Path.Combine(Path.GetDirectoryName(originalFilePath), "coordinates_" + Path.GetFileNameWithoutExtension(originalFilePath) + ".csv");
+
+                    using (StreamWriter writer = new StreamWriter(savePath))
+                    {
+                        // Write header
+                        writer.WriteLine("Image, X, Y");
+
+                        // Write points
+                        foreach (Point point in pointMap[originalFilePath])
+                        {
+                            writer.WriteLine($"{Path.GetFileName(originalFilePath)}, {point.X}, {point.Y}");
+                        }
+                    }
+
+                    MessageBox.Show("Coordinates saved as " + savePath);
+                }
             
+
         }
     }
     class dataNode

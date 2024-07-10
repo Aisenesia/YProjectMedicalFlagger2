@@ -46,7 +46,7 @@
             // 
             pictureBox1.Location = new Point(12, 12);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(609, 550);
+            pictureBox1.Size = new Size(800, 600);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -54,7 +54,7 @@
             // 
             // next
             // 
-            next.Location = new Point(527, 572);
+            next.Location = new Point(718, 618);
             next.Name = "next";
             next.Size = new Size(94, 29);
             next.TabIndex = 1;
@@ -64,7 +64,7 @@
             // 
             // prev
             // 
-            prev.Location = new Point(12, 572);
+            prev.Location = new Point(12, 618);
             prev.Name = "prev";
             prev.Size = new Size(94, 29);
             prev.TabIndex = 2;
@@ -75,14 +75,14 @@
             // checkedListBox1
             // 
             checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Location = new Point(878, 12);
+            checkedListBox1.Location = new Point(975, 12);
             checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(275, 378);
+            checkedListBox1.Size = new Size(275, 444);
             checkedListBox1.TabIndex = 3;
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new Point(878, 442);
+            richTextBox1.Location = new Point(975, 492);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(275, 120);
             richTextBox1.TabIndex = 4;
@@ -91,7 +91,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(878, 419);
+            label1.Location = new Point(975, 468);
             label1.Name = "label1";
             label1.Size = new Size(50, 20);
             label1.TabIndex = 5;
@@ -100,7 +100,7 @@
             // 
             // saveButton
             // 
-            saveButton.Location = new Point(878, 572);
+            saveButton.Location = new Point(975, 618);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(94, 29);
             saveButton.TabIndex = 6;
@@ -111,7 +111,7 @@
             // indexLabel
             // 
             indexLabel.AutoSize = true;
-            indexLabel.Location = new Point(245, 572);
+            indexLabel.Location = new Point(342, 618);
             indexLabel.Name = "indexLabel";
             indexLabel.Size = new Size(132, 20);
             indexLabel.TabIndex = 7;
@@ -120,25 +120,27 @@
             // 
             // reMarkButton
             // 
-            reMarkButton.Location = new Point(627, 12);
+            reMarkButton.Location = new Point(818, 12);
             reMarkButton.Name = "reMarkButton";
             reMarkButton.Size = new Size(94, 29);
             reMarkButton.TabIndex = 8;
             reMarkButton.Text = "Reset";
             reMarkButton.UseVisualStyleBackColor = true;
+            reMarkButton.Click += reMarkButton_Click;
             // 
             // saveMarksButton
             // 
-            saveMarksButton.Location = new Point(627, 47);
+            saveMarksButton.Location = new Point(818, 47);
             saveMarksButton.Name = "saveMarksButton";
             saveMarksButton.Size = new Size(94, 29);
             saveMarksButton.TabIndex = 9;
             saveMarksButton.Text = "Kayıt";
             saveMarksButton.UseVisualStyleBackColor = true;
+            saveMarksButton.Click += saveMarksButton_Click;
             // 
             // nextPatientButton
             // 
-            nextPatientButton.Location = new Point(1059, 572);
+            nextPatientButton.Location = new Point(1156, 618);
             nextPatientButton.Name = "nextPatientButton";
             nextPatientButton.Size = new Size(94, 29);
             nextPatientButton.TabIndex = 10;
@@ -150,7 +152,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1165, 613);
+            ClientSize = new Size(1262, 673);
             Controls.Add(nextPatientButton);
             Controls.Add(saveMarksButton);
             Controls.Add(reMarkButton);
