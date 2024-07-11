@@ -39,6 +39,7 @@
             reMarkButton = new Button();
             saveMarksButton = new Button();
             nextPatientButton = new Button();
+            loadButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -148,11 +149,22 @@
             nextPatientButton.UseVisualStyleBackColor = true;
             nextPatientButton.Click += nextPatientButton_Click;
             // 
-            // Form2
+            // loadButton
+            // 
+            loadButton.Location = new Point(818, 82);
+            loadButton.Name = "loadButton";
+            loadButton.Size = new Size(94, 29);
+            loadButton.TabIndex = 11;
+            loadButton.Text = "Yükle";
+            loadButton.UseVisualStyleBackColor = true;
+            loadButton.Click += loadButton_Click;
+            // 
+            // PatientFlagger
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1262, 673);
+            Controls.Add(loadButton);
             Controls.Add(nextPatientButton);
             Controls.Add(saveMarksButton);
             Controls.Add(reMarkButton);
@@ -164,7 +176,7 @@
             Controls.Add(prev);
             Controls.Add(next);
             Controls.Add(pictureBox1);
-            Name = "Form2";
+            Name = "PatientFlagger";
             Text = "Form2";
             Load += Form2_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -185,5 +197,6 @@
         private Button reMarkButton;
         private Button saveMarksButton;
         private Button nextPatientButton;
+        private Button loadButton;
     }
 }

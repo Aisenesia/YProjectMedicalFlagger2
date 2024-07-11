@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
 
 namespace YProjectMedicalFlagger2
@@ -22,8 +21,6 @@ namespace YProjectMedicalFlagger2
         private string[] filesFromBefore;
         private int index;
 
-
-
         private string currentPatientName;
         private bool isSaved;
 
@@ -31,11 +28,10 @@ namespace YProjectMedicalFlagger2
         private int currentIndex;
         private string saveFile;
 
-
         Dictionary<string, dataNode> dataMap;
         private string[] categories;
 
-        private Dictionary<string, Point[]> pointMap;
+        private Dictionary<string, List<Point>> pointMap;
         private Point lastClickLocation;
         private bool firstClickDone = false;
 
@@ -52,30 +48,24 @@ namespace YProjectMedicalFlagger2
             InitalizePointMap();
             checkForSavedFile();
             setIfSaved();
-
-
         }
 
         private void InitializeFileList()
         {
             directoryPath = filesPath + "\\" + currentPatientName;
             files = Directory.GetFiles(directoryPath).ToList();
-            saveFile = filesPath + "\\saves.txt";
-
-            //InitializeImageList();
+            saveFile = filesPath + "\\saves.csv";
         }
+
         private void InitializeImageList()
         {
-
             imageFiles = files.Where(file => file.EndsWith(".png") || file.EndsWith(".jpg")).ToArray();
             currentIndex = 0;
-            //firstClickDone = false;
             lastClickLocation = new Point();
         }
 
         private void DisplayCurrentImage()
         {
-
             if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
             {
                 pictureBox1.ImageLocation = imageFiles[currentIndex];
@@ -87,20 +77,25 @@ namespace YProjectMedicalFlagger2
 
         private void Form2_Load(object sender, EventArgs e)
         {
-
             label1.Text = "Ek notlar:";
-            //listBoxInit();
             DisplayCurrentImage();
         }
 
-
         private void InitalizeListBox()
         {
-            string line = File.ReadLines(saveFile).First();
+            string line;
+            try
+            {
+                line = File.ReadLines(saveFile).First();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("No categories found in the save file, use admin panel to create categories.");
+                return;
+            }
 
             string[] firstLine = line.Split(',');
             categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray(); // skip the first element, which is the image name, and last element, which is the description
-
 
             foreach (string data in categories)
             {
@@ -108,14 +103,12 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-
         private void checkForSavedFile()
         {
             dataMap = new Dictionary<string, dataNode>();
 
             if (File.Exists(saveFile))
             {
-
                 isSaved = false;
 
                 using (StreamReader reader = new StreamReader(saveFile))
@@ -130,7 +123,6 @@ namespace YProjectMedicalFlagger2
                         // Check if the first field matches the name we are looking for
                         if (fields.Length > 0 && fields[0] == currentPatientName)
                         {
-
                             isSaved = true;
                             //parse the data into dataNode and add it to the dictionary
                             bool[] data = new bool[fields.Length - 2];
@@ -141,17 +133,19 @@ namespace YProjectMedicalFlagger2
                             dataNode node = new dataNode(fields[0], data, fields[fields.Length - 1]);
                             dataMap.Add(fields[0], node);
 
-
                             break;
                         }
                     }
                 }
             }
+            else
+            {
+                File.Create(saveFile);
+            }
         }
 
         private void setIfSaved()
         {
-
             if (isSaved)
             {
                 dataNode node = dataMap[currentPatientName];
@@ -196,10 +190,8 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
+        private void textBox1_TextChanged(object sender, EventArgs e) { }
 
-        }
         private void prev_Click(object sender, EventArgs e)
         {
             if (currentIndex > 0)
@@ -211,7 +203,6 @@ namespace YProjectMedicalFlagger2
                 currentIndex = imageFiles.Length - 1;
             }
             DisplayCurrentImage();
-
         }
 
         private void next_Click(object sender, EventArgs e)
@@ -225,7 +216,6 @@ namespace YProjectMedicalFlagger2
                 currentIndex = 0;
             }
             DisplayCurrentImage();
-
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -233,11 +223,7 @@ namespace YProjectMedicalFlagger2
             savePatient();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        private void label1_Click(object sender, EventArgs e) { }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -263,7 +249,12 @@ namespace YProjectMedicalFlagger2
 
             Point coordinates = new Point(adjustedX, adjustedY);
 
-            Debug.WriteLine("X: " + coordinates.X + " Y: " + coordinates.Y);
+            //Debug.WriteLine("X: " + coordinates.X + " Y: " + coordinates.Y);
+            if (!pointMap.ContainsKey(imageFiles[currentIndex]))
+            {
+                pointMap[imageFiles[currentIndex]] = new List<Point>();
+            }
+            pointMap[imageFiles[currentIndex]].Add(coordinates);
 
             // Draw the line
             if (lastClickLocation.IsEmpty)
@@ -279,17 +270,14 @@ namespace YProjectMedicalFlagger2
                 pictureBox1.Invalidate();
                 lastClickLocation = coordinates;
             }
-            pointMap[imageFiles[currentIndex]].Append(coordinates);
         }
-
 
         private void InitalizePointMap()
         {
-            pointMap = new Dictionary<string, Point[]>();
+            pointMap = new Dictionary<string, List<Point>>();
             foreach (string image in imageFiles)
             {
-                //Point[] points = new Point[0];
-                pointMap.Add(image, new Point[0]);
+                pointMap.Add(image, new List<Point>());
             }
         }
 
@@ -302,10 +290,7 @@ namespace YProjectMedicalFlagger2
                 string filename = filesFromBefore[index];
                 String[] strings = filename.Split('\\');
 
-
-
                 PatientFlagger newForm = new PatientFlagger(strings.Last(), filesFromBefore, index + 1);
-
 
                 newForm.Show();
             }
@@ -313,17 +298,14 @@ namespace YProjectMedicalFlagger2
             {
                 MessageBox.Show("No more patients to show.");
             }
-
         }
-
-
 
         private void reMarkButton_Click(object sender, EventArgs e)
         {
             if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
             {
                 // Clear the points for the current image
-                pointMap[imageFiles[currentIndex]] = new Point[0];
+                pointMap[imageFiles[currentIndex]].Clear();
 
                 // Reset last click location
                 lastClickLocation = new Point();
@@ -336,42 +318,118 @@ namespace YProjectMedicalFlagger2
 
         private void saveMarksButton_Click(object sender, EventArgs e)
         {
-           
-                if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
+            if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
+            {
+                string originalFilePath = imageFiles[currentIndex];
+                string savePath = Path.Combine(Path.GetDirectoryName(originalFilePath), "coordinates_" + Path.GetFileNameWithoutExtension(originalFilePath) + ".csv");
+
+                using (StreamWriter writer = new StreamWriter(savePath))
                 {
-                    string originalFilePath = imageFiles[currentIndex];
-                    string savePath = Path.Combine(Path.GetDirectoryName(originalFilePath), "coordinates_" + Path.GetFileNameWithoutExtension(originalFilePath) + ".csv");
+                    // Write header
+                    writer.WriteLine("X, Y");
 
-                    using (StreamWriter writer = new StreamWriter(savePath))
+                    // Write points
+                    if (!pointMap.ContainsKey(imageFiles[currentIndex]))
                     {
-                        // Write header
-                        writer.WriteLine("Image, X, Y");
+                        MessageBox.Show("No points marked on this image.");
+                        return;
+                    }
+                    foreach (Point point in pointMap[imageFiles[currentIndex]])
+                    {
+                        //Debug.WriteLine("Writing point:" + point.X + " , " + point.Y);
+                        writer.WriteLine($"{point.X}, {point.Y}");
+                    }
+                    writer.Flush(); // Ensure that all data is written to the file
+                }
 
-                        // Write points
-                        foreach (Point point in pointMap[originalFilePath])
+                MessageBox.Show("Coordinates saved as " + savePath);
+            }
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
+            {
+                string originalFilePath = imageFiles[currentIndex];
+                string loadPath = Path.Combine(Path.GetDirectoryName(originalFilePath), "coordinates_" + Path.GetFileNameWithoutExtension(originalFilePath) + ".csv");
+
+                if (File.Exists(loadPath))
+                {
+                    using (StreamReader reader = new StreamReader(loadPath))
+                    {
+                        // Skip the header line
+                        reader.ReadLine();
+
+                        // Clear any existing points for the current image
+                        if (pointMap.ContainsKey(imageFiles[currentIndex]))
                         {
-                            writer.WriteLine($"{Path.GetFileName(originalFilePath)}, {point.X}, {point.Y}");
+                            pointMap[imageFiles[currentIndex]].Clear();
+                        }
+                        else
+                        {
+                            pointMap[imageFiles[currentIndex]] = new List<Point>();
+                        }
+
+                        // Read the points
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            string[] fields = line.Split(',');
+                            if (fields.Length == 2)
+                            {
+                                
+                                int x = int.Parse(fields[0].Trim());
+                                int y = int.Parse(fields[1].Trim());
+
+                                
+                                pointMap[imageFiles[currentIndex]].Add(new Point(x, y));
+                                
+                            }
                         }
                     }
 
-                    MessageBox.Show("Coordinates saved as " + savePath);
-                }
-            
+                    // Redraw the image with the loaded points
+                    pictureBox1.ImageLocation = imageFiles[currentIndex];
+                    pictureBox1.Load();
 
+                    using (Graphics g = Graphics.FromImage(pictureBox1.Image))
+                    {
+                        Point? lastPoint = null;
+                        foreach (Point point in pointMap[imageFiles[currentIndex]])
+                        {
+                            Debug.WriteLine("Drawing point:" + point.X + " , " + point.Y);
+                            if (lastPoint != null)
+                            {
+                                g.DrawLine(new Pen(Color.Red, 2), lastPoint.Value, point);
+                            }
+                            lastPoint = point;
+                        }
+                        lastClickLocation = lastPoint ?? new Point();
+                    }
+
+                    pictureBox1.Invalidate();
+                    MessageBox.Show("Coordinates loaded from " + loadPath);
+                }
+                else
+                {
+                    MessageBox.Show("No saved coordinates found for this image.");
+                }
+            }
         }
+
     }
+
     class dataNode
     {
-
         public string name;
         public bool[] data;
         public string description;
+
         public dataNode(string name, bool[] data, string description)
         {
             this.name = name;
             this.data = data;
             this.description = description;
         }
-       
     }
 }
