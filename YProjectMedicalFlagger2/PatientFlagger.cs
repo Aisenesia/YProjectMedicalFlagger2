@@ -44,8 +44,9 @@ namespace YProjectMedicalFlagger2
             InitializeComponent();
             InitializeFileList();
             InitializeImageList();
+            patientNameLabel.Text = currentPatientName;
             InitalizeListBox();
-            InitalizePointMap();
+            //InitalizePointMap();
             checkForSavedFile();
             setIfSaved();
         }
@@ -99,7 +100,7 @@ namespace YProjectMedicalFlagger2
 
             foreach (string data in categories)
             {
-                checkedListBox1.Items.Add(data);
+                patientListBox.Items.Add(data);
             }
         }
 
@@ -177,7 +178,7 @@ namespace YProjectMedicalFlagger2
                 bool[] data = node.data;
                 for (int i = 0; i < data.Length; i++)
                 {
-                    checkedListBox1.SetItemChecked(i, data[i]);
+                    patientListBox.SetItemChecked(i, data[i]);
                 }
                 richTextBox1.Text = node.description;
             }
@@ -186,9 +187,9 @@ namespace YProjectMedicalFlagger2
         private void savePatient()
         {
             string data = currentPatientName + ";";
-            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            for (int i = 0; i < patientListBox.Items.Count; i++)
             {
-                data += (checkedListBox1.GetItemChecked(i) ? "true" : "false") + ";";
+                data += (patientListBox.GetItemChecked(i) ? "true" : "false") + ";";
             }
 
             // Escape description by enclosing it in quotes if it contains a semicolon
@@ -255,8 +256,7 @@ namespace YProjectMedicalFlagger2
             savePatient();
         }
 
-        private void label1_Click(object sender, EventArgs e) { }
-
+       /*
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             MouseEventArgs me = (MouseEventArgs)e;
@@ -311,7 +311,7 @@ namespace YProjectMedicalFlagger2
             {
                 pointMap.Add(image, new List<Point>());
             }
-        }
+        }*/
 
         private void nextPatientButton_Click(object sender, EventArgs e)
         {
@@ -332,6 +332,7 @@ namespace YProjectMedicalFlagger2
             }
         }
 
+        /*
         private void reMarkButton_Click(object sender, EventArgs e)
         {
             if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
@@ -447,7 +448,7 @@ namespace YProjectMedicalFlagger2
                     MessageBox.Show("No saved coordinates found for this image.");
                 }
             }
-        }
+        }*/
 
     }
 

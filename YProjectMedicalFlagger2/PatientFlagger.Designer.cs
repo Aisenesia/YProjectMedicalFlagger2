@@ -32,31 +32,30 @@ namespace YProjectMedicalFlagger2
             pictureBox1 = new PictureBox();
             next = new Button();
             prev = new Button();
-            checkedListBox1 = new CheckedListBox();
+            patientListBox = new CheckedListBox();
             richTextBox1 = new RichTextBox();
             label1 = new Label();
             saveButton = new Button();
             indexLabel = new Label();
-            reMarkButton = new Button();
-            saveMarksButton = new Button();
             nextPatientButton = new Button();
-            loadButton = new Button();
+            patientLabel = new Label();
+            patientNameLabel = new Label();
+            imageListBox = new CheckedListBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pictureBox1
             // 
-            pictureBox1.Location = new Point(12, 12);
+            pictureBox1.Location = new Point(12, 47);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(800, 600);
+            pictureBox1.Size = new Size(680, 600);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
             // 
             // next
             // 
-            next.Location = new Point(718, 618);
+            next.Location = new Point(718, 680);
             next.Name = "next";
             next.Size = new Size(94, 29);
             next.TabIndex = 1;
@@ -66,7 +65,7 @@ namespace YProjectMedicalFlagger2
             // 
             // prev
             // 
-            prev.Location = new Point(12, 618);
+            prev.Location = new Point(12, 680);
             prev.Name = "prev";
             prev.Size = new Size(94, 29);
             prev.TabIndex = 2;
@@ -74,17 +73,17 @@ namespace YProjectMedicalFlagger2
             prev.UseVisualStyleBackColor = true;
             prev.Click += prev_Click;
             // 
-            // checkedListBox1
+            // patientListBox
             // 
-            checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Location = new Point(975, 12);
-            checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(275, 444);
-            checkedListBox1.TabIndex = 3;
+            patientListBox.FormattingEnabled = true;
+            patientListBox.Location = new Point(975, 47);
+            patientListBox.Name = "patientListBox";
+            patientListBox.Size = new Size(275, 444);
+            patientListBox.TabIndex = 3;
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new Point(975, 492);
+            richTextBox1.Location = new Point(975, 527);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(275, 120);
             richTextBox1.TabIndex = 4;
@@ -93,16 +92,15 @@ namespace YProjectMedicalFlagger2
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(975, 468);
+            label1.Location = new Point(975, 504);
             label1.Name = "label1";
-            label1.Size = new Size(50, 20);
+            label1.Size = new Size(125, 20);
             label1.TabIndex = 5;
-            label1.Text = "label1";
-            label1.Click += selectPatientLabel_Click;
+            label1.Text = "descriptionsLabel";
             // 
             // saveButton
             // 
-            saveButton.Location = new Point(975, 618);
+            saveButton.Location = new Point(975, 680);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(94, 29);
             saveButton.TabIndex = 6;
@@ -113,36 +111,16 @@ namespace YProjectMedicalFlagger2
             // indexLabel
             // 
             indexLabel.AutoSize = true;
-            indexLabel.Location = new Point(342, 618);
+            indexLabel.Location = new Point(336, 692);
             indexLabel.Name = "indexLabel";
             indexLabel.Size = new Size(132, 20);
             indexLabel.TabIndex = 7;
             indexLabel.Text = "Resim bulunamadı";
             indexLabel.TextAlign = ContentAlignment.TopCenter;
             // 
-            // reMarkButton
-            // 
-            reMarkButton.Location = new Point(818, 12);
-            reMarkButton.Name = "reMarkButton";
-            reMarkButton.Size = new Size(94, 29);
-            reMarkButton.TabIndex = 8;
-            reMarkButton.Text = "Reset";
-            reMarkButton.UseVisualStyleBackColor = true;
-            reMarkButton.Click += reMarkButton_Click;
-            // 
-            // saveMarksButton
-            // 
-            saveMarksButton.Location = new Point(818, 47);
-            saveMarksButton.Name = "saveMarksButton";
-            saveMarksButton.Size = new Size(94, 29);
-            saveMarksButton.TabIndex = 9;
-            saveMarksButton.Text = "Kayıt";
-            saveMarksButton.UseVisualStyleBackColor = true;
-            saveMarksButton.Click += saveMarksButton_Click;
-            // 
             // nextPatientButton
             // 
-            nextPatientButton.Location = new Point(1156, 618);
+            nextPatientButton.Location = new Point(1156, 680);
             nextPatientButton.Name = "nextPatientButton";
             nextPatientButton.Size = new Size(94, 29);
             nextPatientButton.TabIndex = 10;
@@ -150,30 +128,46 @@ namespace YProjectMedicalFlagger2
             nextPatientButton.UseVisualStyleBackColor = true;
             nextPatientButton.Click += nextPatientButton_Click;
             // 
-            // loadButton
+            // patientLabel
             // 
-            loadButton.Location = new Point(818, 82);
-            loadButton.Name = "loadButton";
-            loadButton.Size = new Size(94, 29);
-            loadButton.TabIndex = 11;
-            loadButton.Text = "Yükle";
-            loadButton.UseVisualStyleBackColor = true;
-            loadButton.Click += loadButton_Click;
+            patientLabel.AutoSize = true;
+            patientLabel.Location = new Point(12, 24);
+            patientLabel.Name = "patientLabel";
+            patientLabel.Size = new Size(54, 20);
+            patientLabel.TabIndex = 12;
+            patientLabel.Text = "Hasta: ";
+            // 
+            // patientNameLabel
+            // 
+            patientNameLabel.AutoSize = true;
+            patientNameLabel.Location = new Point(82, 24);
+            patientNameLabel.Name = "patientNameLabel";
+            patientNameLabel.Size = new Size(35, 20);
+            patientNameLabel.TabIndex = 13;
+            patientNameLabel.Text = "doe";
+            // 
+            // imageListBox
+            // 
+            imageListBox.FormattingEnabled = true;
+            imageListBox.Location = new Point(698, 47);
+            imageListBox.Name = "imageListBox";
+            imageListBox.Size = new Size(202, 444);
+            imageListBox.TabIndex = 14;
             // 
             // PatientFlagger
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1262, 673);
-            Controls.Add(loadButton);
+            ClientSize = new Size(1262, 721);
+            Controls.Add(imageListBox);
+            Controls.Add(patientNameLabel);
+            Controls.Add(patientLabel);
             Controls.Add(nextPatientButton);
-            Controls.Add(saveMarksButton);
-            Controls.Add(reMarkButton);
             Controls.Add(indexLabel);
             Controls.Add(saveButton);
             Controls.Add(label1);
             Controls.Add(richTextBox1);
-            Controls.Add(checkedListBox1);
+            Controls.Add(patientListBox);
             Controls.Add(prev);
             Controls.Add(next);
             Controls.Add(pictureBox1);
@@ -195,14 +189,14 @@ namespace YProjectMedicalFlagger2
         private PictureBox pictureBox1;
         private Button next;
         private Button prev;
-        private CheckedListBox checkedListBox1;
+        private CheckedListBox patientListBox;
         private RichTextBox richTextBox1;
         private Label label1;
         private Button saveButton;
         private Label indexLabel;
-        private Button reMarkButton;
-        private Button saveMarksButton;
         private Button nextPatientButton;
-        private Button loadButton;
+        private Label patientLabel;
+        private Label patientNameLabel;
+        private CheckedListBox imageListBox;
     }
 }
