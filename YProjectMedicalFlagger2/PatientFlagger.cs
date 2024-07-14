@@ -94,7 +94,7 @@ namespace YProjectMedicalFlagger2
                 return;
             }
 
-            string[] firstLine = line.Split(',');
+            string[] firstLine = line.Split(';');
             categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray(); // skip the first element, which is the image name, and last element, which is the description
 
             foreach (string data in categories)
@@ -114,17 +114,13 @@ namespace YProjectMedicalFlagger2
                 using (StreamReader reader = new StreamReader(saveFile))
                 {
                     string line;
-                    // Read lines until the end of the file
                     while ((line = reader.ReadLine()) != null)
                     {
-                        // Split the line into fields
-                        string[] fields = line.Split(',');
+                        string[] fields = ParseCsvLine(line);
 
-                        // Check if the first field matches the name we are looking for
                         if (fields.Length > 0 && fields[0] == currentPatientName)
                         {
                             isSaved = true;
-                            //parse the data into dataNode and add it to the dictionary
                             bool[] data = new bool[fields.Length - 2];
                             for (int i = 1; i < fields.Length - 1; i++)
                             {
@@ -132,7 +128,6 @@ namespace YProjectMedicalFlagger2
                             }
                             dataNode node = new dataNode(fields[0], data, fields[fields.Length - 1]);
                             dataMap.Add(fields[0], node);
-
                             break;
                         }
                     }
@@ -140,8 +135,38 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                File.Create(saveFile);
+                File.Create(saveFile).Dispose(); // Ensure the file is properly closed after creation
             }
+        }
+
+        private string[] ParseCsvLine(string line)
+        {
+            var fields = new List<string>();
+            var sb = new StringBuilder();
+            bool inQuotes = false;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+
+                if (c == '\"')
+                {
+                    inQuotes = !inQuotes;
+                    sb.Append(c);
+                }
+                else if (c == ';' && !inQuotes)
+                {
+                    fields.Add(sb.ToString().Trim('\"').Replace("\"\"", "\""));
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+
+            fields.Add(sb.ToString().Trim('\"').Replace("\"\"", "\""));
+            return fields.ToArray();
         }
 
         private void setIfSaved()
@@ -160,19 +185,26 @@ namespace YProjectMedicalFlagger2
 
         private void savePatient()
         {
-            string data = currentPatientName + ",";
+            string data = currentPatientName + ";";
             for (int i = 0; i < checkedListBox1.Items.Count; i++)
             {
-                data += checkedListBox1.GetItemChecked(i) + ",";
+                data += (checkedListBox1.GetItemChecked(i) ? "true" : "false") + ";";
             }
-            data += richTextBox1.Text;
+
+            // Escape description by enclosing it in quotes if it contains a semicolon
+            string description = richTextBox1.Text;
+            if (description.Contains(";"))
+            {
+                description = "\"" + description.Replace("\"", "\"\"") + "\"";
+            }
+            data += description;
 
             if (isSaved)
             {
                 string[] lines = File.ReadAllLines(saveFile);
                 for (int i = 0; i < lines.Length; i++)
                 {
-                    string[] fields = lines[i].Split(',');
+                    string[] fields = lines[i].Split(';');
                     if (fields[0] == currentPatientName)
                     {
                         lines[i] = data;
@@ -374,7 +406,7 @@ namespace YProjectMedicalFlagger2
                         string line;
                         while ((line = reader.ReadLine()) != null)
                         {
-                            string[] fields = line.Split(',');
+                            string[] fields = line.Split(';');
                             if (fields.Length == 2)
                             {
                                 

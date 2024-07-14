@@ -1,4 +1,5 @@
-﻿namespace YProjectMedicalFlagger2
+﻿
+namespace YProjectMedicalFlagger2
 {
     partial class PatientFlagger
     {
@@ -97,7 +98,7 @@
             label1.Size = new Size(50, 20);
             label1.TabIndex = 5;
             label1.Text = "label1";
-            label1.Click += label1_Click;
+            label1.Click += selectPatientLabel_Click;
             // 
             // saveButton
             // 
@@ -182,6 +183,11 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
+        }
+
+        private void selectPatientLabel_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

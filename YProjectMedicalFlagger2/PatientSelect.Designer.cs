@@ -60,8 +60,9 @@
             selectPatientLabel.Size = new Size(100, 20);
             selectPatientLabel.TabIndex = 2;
             selectPatientLabel.Text = "Hasta Seçiniz:";
+            selectPatientLabel.Click += selectPatientLabel_Click;
             // 
-            // Form1
+            // PatientSelect
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -69,7 +70,7 @@
             Controls.Add(selectPatientLabel);
             Controls.Add(selectButton);
             Controls.Add(listBox1);
-            Name = "Form1";
+            Name = "PatientSelect";
             Text = "Form1";
             ResumeLayout(false);
             PerformLayout();
