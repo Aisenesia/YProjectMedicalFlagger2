@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+﻿using System.Data;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-using System.Diagnostics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace YProjectMedicalFlagger2
 {
@@ -19,8 +9,8 @@ namespace YProjectMedicalFlagger2
         private string directoryPath;
         private List<string> files;
 
-        private string[] filesFromBefore;
-        private int index;
+        private string[] filesFromBefore; // all the files in the directory
+        private int index; // current patients index in the files array
 
         private string currentPatientName;
         private bool isSaved;
@@ -358,31 +348,16 @@ namespace YProjectMedicalFlagger2
         }
 
 
-        private void textBox1_TextChanged(object sender, EventArgs e) { }
 
         private void prev_Click(object sender, EventArgs e)
         {
-            if (currentIndex > 0)
-            {
-                currentIndex--;
-            }
-            else
-            {
-                currentIndex = imageFiles.Length - 1;
-            }
+            currentIndex = (currentIndex - 1 + imageFiles.Length) % imageFiles.Length;
             DisplayCurrentImage();
         }
 
         private void next_Click(object sender, EventArgs e)
         {
-            if (currentIndex < imageFiles.Length - 1)
-            {
-                currentIndex++;
-            }
-            else
-            {
-                currentIndex = 0;
-            }
+            currentIndex = (currentIndex + 1) % imageFiles.Length;
             DisplayCurrentImage();
         }
 
