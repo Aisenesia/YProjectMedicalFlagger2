@@ -72,6 +72,7 @@ namespace YProjectMedicalFlagger2
                 currentImageName = Path.GetFileName(imageFiles[currentIndex]);
                 checkForSavedImageFile();
                 setIfImageSaved();
+                
             }
 
         }
@@ -187,7 +188,14 @@ namespace YProjectMedicalFlagger2
                                 data[i - 1] = Convert.ToBoolean(fields[i]);
                             }
                             DataNode node = new DataNode(fields[0], data, fields[fields.Length - 1]);
-                            imageMap.Add(currentImageName ,node);
+                            if (imageMap.ContainsKey(currentImageName))
+                            {
+                                imageMap[currentImageName] = node;
+                            }
+                            else
+                            {
+                                imageMap.Add(currentImageName, node);
+                            }
                             break;
                         }
                     }
@@ -267,6 +275,7 @@ namespace YProjectMedicalFlagger2
                 {
                     imageListBox.SetItemChecked(i, false);
                 }
+                imageTextBox.Text = "";
             }
         }
 
@@ -319,11 +328,13 @@ namespace YProjectMedicalFlagger2
 
             // Escape description by enclosing it in quotes if it contains a semicolon
             string description = imageTextBox.Text;
+            //MessageBox.Show(description);
             if (description.Contains(";"))
             {
                 description = "\"" + description.Replace("\"", "\"\"") + "\"";
             }
             data += description;
+            MessageBox.Show(data);
 
             if (isImageSaved[currentIndex])
             {
@@ -331,7 +342,7 @@ namespace YProjectMedicalFlagger2
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string[] fields = lines[i].Split(';');
-                    if (fields[0] == currentIndex.ToString())
+                    if (fields[0] == currentImageName)
                     {
                         lines[i] = data;
                         break;
