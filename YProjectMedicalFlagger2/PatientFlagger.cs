@@ -18,11 +18,12 @@ namespace YProjectMedicalFlagger2
 
         private string[] imageFiles;
         private int currentIndex;
+        private string currentImageName;
         private string saveFile;
         private string imageSaveFile;
 
         Dictionary<string, DataNode> dataMap;
-        DataNode[] imageMap;
+        Dictionary<string, DataNode> imageMap;
         private string[] categories;
         private string[] imageCategories;
 
@@ -55,7 +56,7 @@ namespace YProjectMedicalFlagger2
         private void InitializeImageList()
         {
             imageFiles = files.Where(file => file.EndsWith(".png") || file.EndsWith(".jpg")).ToArray();
-            imageMap = new DataNode[imageFiles.Length];
+            imageMap = new Dictionary<string, DataNode>();
             isImageSaved = new bool[imageFiles.Length];
             currentIndex = 0;
 
@@ -68,7 +69,7 @@ namespace YProjectMedicalFlagger2
                 pictureBox1.ImageLocation = imageFiles[currentIndex];
                 indexLabel.Text = (currentIndex + 1) + "/" + imageFiles.Length;
                 indexLabel.Show();
-
+                currentImageName = Path.GetFileName(imageFiles[currentIndex]);
                 checkForSavedImageFile();
                 setIfImageSaved();
             }
@@ -177,7 +178,7 @@ namespace YProjectMedicalFlagger2
                     {
                         string[] fields = ParseCsvLine(line);
 
-                        if (fields.Length > 0 && fields[0] == currentIndex.ToString())
+                        if (fields.Length > 0 && fields[0] == currentImageName)
                         {
                             isImageSaved[currentIndex] = true;
                             bool[] data = new bool[fields.Length - 2];
@@ -186,7 +187,7 @@ namespace YProjectMedicalFlagger2
                                 data[i - 1] = Convert.ToBoolean(fields[i]);
                             }
                             DataNode node = new DataNode(fields[0], data, fields[fields.Length - 1]);
-                            imageMap[currentIndex] = node;
+                            imageMap.Add(currentImageName ,node);
                             break;
                         }
                     }
@@ -251,7 +252,7 @@ namespace YProjectMedicalFlagger2
             if (isImageSaved == null) return;
             if (isImageSaved[currentIndex])
             {
-                DataNode node = imageMap[currentIndex];
+                DataNode node = imageMap[currentImageName];
                 bool[] data = node.data;
                 for (int i = 0; i < data.Length; i++)
                 {
@@ -310,7 +311,7 @@ namespace YProjectMedicalFlagger2
 
         private void saveImage()
         {
-            string data = currentIndex + ";";
+            string data = currentImageName + ";";
             for (int i = 0; i < imageListBox.Items.Count; i++)
             {
                 data += (imageListBox.GetItemChecked(i) ? "true" : "false") + ";";
