@@ -33,16 +33,16 @@ namespace YProjectMedicalFlagger2
             next = new Button();
             prev = new Button();
             patientListBox = new CheckedListBox();
-            richTextBox1 = new RichTextBox();
+            patientTextBox = new RichTextBox();
             label1 = new Label();
-            saveButton = new Button();
+            savePatient_Button = new Button();
             indexLabel = new Label();
             nextPatientButton = new Button();
             patientLabel = new Label();
             patientNameLabel = new Label();
             imageListBox = new CheckedListBox();
-            saveImageAttributesButton = new Button();
-            richTextBox2 = new RichTextBox();
+            imageTextBox = new RichTextBox();
+            saveImageAttributes_Button = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -83,13 +83,13 @@ namespace YProjectMedicalFlagger2
             patientListBox.Size = new Size(275, 444);
             patientListBox.TabIndex = 3;
             // 
-            // richTextBox1
+            // patientTextBox
             // 
-            richTextBox1.Location = new Point(975, 527);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(275, 120);
-            richTextBox1.TabIndex = 4;
-            richTextBox1.Text = "";
+            patientTextBox.Location = new Point(975, 527);
+            patientTextBox.Name = "patientTextBox";
+            patientTextBox.Size = new Size(275, 120);
+            patientTextBox.TabIndex = 4;
+            patientTextBox.Text = "";
             // 
             // label1
             // 
@@ -100,20 +100,20 @@ namespace YProjectMedicalFlagger2
             label1.TabIndex = 5;
             label1.Text = "descriptionsLabel";
             // 
-            // saveButton
+            // savePatient_Button
             // 
-            saveButton.Location = new Point(975, 680);
-            saveButton.Name = "saveButton";
-            saveButton.Size = new Size(94, 29);
-            saveButton.TabIndex = 6;
-            saveButton.Text = "Kaydet";
-            saveButton.UseVisualStyleBackColor = true;
-            saveButton.Click += saveButton_Click;
+            savePatient_Button.Location = new Point(975, 680);
+            savePatient_Button.Name = "savePatient_Button";
+            savePatient_Button.Size = new Size(94, 29);
+            savePatient_Button.TabIndex = 6;
+            savePatient_Button.Text = "Kaydet";
+            savePatient_Button.UseVisualStyleBackColor = true;
+            savePatient_Button.Click += saveButton_Click;
             // 
             // indexLabel
             // 
             indexLabel.AutoSize = true;
-            indexLabel.Location = new Point(261, 689);
+            indexLabel.Location = new Point(279, 680);
             indexLabel.Name = "indexLabel";
             indexLabel.Size = new Size(132, 20);
             indexLabel.TabIndex = 7;
@@ -156,39 +156,39 @@ namespace YProjectMedicalFlagger2
             imageListBox.Size = new Size(202, 444);
             imageListBox.TabIndex = 14;
             // 
-            // saveImageAttributesButton
+            // imageTextBox
             // 
-            saveImageAttributesButton.Location = new Point(698, 680);
-            saveImageAttributesButton.Name = "saveImageAttributesButton";
-            saveImageAttributesButton.Size = new Size(94, 29);
-            saveImageAttributesButton.TabIndex = 15;
-            saveImageAttributesButton.Text = "Kaydet";
-            saveImageAttributesButton.UseVisualStyleBackColor = true;
-            saveImageAttributesButton.Click += saveImageAttributesButton_Click;
+            imageTextBox.Location = new Point(698, 497);
+            imageTextBox.Name = "imageTextBox";
+            imageTextBox.Size = new Size(202, 150);
+            imageTextBox.TabIndex = 15;
+            imageTextBox.Text = "";
             // 
-            // richTextBox2
+            // saveImageAttributes_Button
             // 
-            richTextBox2.Location = new Point(698, 527);
-            richTextBox2.Name = "richTextBox2";
-            richTextBox2.Size = new Size(202, 120);
-            richTextBox2.TabIndex = 16;
-            richTextBox2.Text = "";
+            saveImageAttributes_Button.Location = new Point(698, 680);
+            saveImageAttributes_Button.Name = "saveImageAttributes_Button";
+            saveImageAttributes_Button.Size = new Size(94, 29);
+            saveImageAttributes_Button.TabIndex = 16;
+            saveImageAttributes_Button.Text = "Kaydet";
+            saveImageAttributes_Button.UseVisualStyleBackColor = true;
+            saveImageAttributes_Button.Click += saveImageAttributes_Button_Click;
             // 
             // PatientFlagger
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1262, 721);
-            Controls.Add(richTextBox2);
-            Controls.Add(saveImageAttributesButton);
+            Controls.Add(saveImageAttributes_Button);
+            Controls.Add(imageTextBox);
             Controls.Add(imageListBox);
             Controls.Add(patientNameLabel);
             Controls.Add(patientLabel);
             Controls.Add(nextPatientButton);
             Controls.Add(indexLabel);
-            Controls.Add(saveButton);
+            Controls.Add(savePatient_Button);
             Controls.Add(label1);
-            Controls.Add(richTextBox1);
+            Controls.Add(patientTextBox);
             Controls.Add(patientListBox);
             Controls.Add(prev);
             Controls.Add(next);
@@ -212,15 +212,15 @@ namespace YProjectMedicalFlagger2
         private Button next;
         private Button prev;
         private CheckedListBox patientListBox;
-        private RichTextBox richTextBox1;
+        private RichTextBox patientTextBox;
         private Label label1;
-        private Button saveButton;
+        private Button savePatient_Button;
         private Label indexLabel;
         private Button nextPatientButton;
         private Label patientLabel;
         private Label patientNameLabel;
         private CheckedListBox imageListBox;
-        private Button saveImageAttributesButton;
-        private RichTextBox richTextBox2;
+        private RichTextBox imageTextBox;
+        private Button saveImageAttributes_Button;
     }
 }
