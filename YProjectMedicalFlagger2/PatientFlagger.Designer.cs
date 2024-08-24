@@ -55,10 +55,11 @@ namespace YProjectMedicalFlagger2
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+            pictureBox1.Click += pictureBox1_Click;
             // 
             // next
             // 
-            next.Location = new Point(338, 680);
+            next.Location = new Point(347, 680);
             next.Name = "next";
             next.Size = new Size(94, 29);
             next.TabIndex = 1;

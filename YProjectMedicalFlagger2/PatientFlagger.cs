@@ -457,7 +457,15 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null)
+            {
+                FullScreenImageForm fullScreenImageForm = new FullScreenImageForm(pictureBox1.Image);
+                fullScreenImageForm.ShowDialog(); // Show the form as a modal dialog
+            }
+        }
+
     }
 
     public class DataNode
@@ -474,3 +482,5 @@ namespace YProjectMedicalFlagger2
         }
     }
 }
+
+
