@@ -52,7 +52,8 @@ namespace YProjectMedicalFlagger2
             if (!string.IsNullOrEmpty(selectedFile))
             {
                 int index = listBox1.SelectedIndex;
-                PatientFlagger form2 = new PatientFlagger(selectedFile, files, index + 1);
+                PatientFlagger2 form2 = new PatientFlagger2(selectedFile, files, index);
+                //TODO - Switch when building for release
                 form2.Show();
             }
         }

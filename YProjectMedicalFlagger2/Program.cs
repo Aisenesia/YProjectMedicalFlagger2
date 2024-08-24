@@ -15,6 +15,7 @@ namespace YProjectMedicalFlagger2
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ApplicationConfiguration.Initialize();
             Application.Run(new PatientSelect());
+            //Application.Run(new TestForm());
         }
     }
 }
