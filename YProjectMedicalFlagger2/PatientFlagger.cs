@@ -1,18 +1,20 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using System.Text;
+using System.IO;
 
 namespace YProjectMedicalFlagger2
 {
     public partial class PatientFlagger : Form
     {
-        private static string filesPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\files"; // @"C:\Users\Hakan\source\repos\YProjectMedicalFlagger\YProjectMedicalFlagger\files";
+        private static readonly string filesPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "files");
         private string directoryPath;
         private List<string> files;
 
-        private string[] filesFromBefore; // all the files in the directory
-        private int index; // current patients index in the files array
+        private readonly string[] filesFromBefore; // All the files in the directory
+        private int index; // Current patient's index in the files array
 
-        private string currentPatientName;
+        private readonly string currentPatientName;
         private bool isSaved;
         private bool[] isImageSaved;
 
@@ -22,44 +24,43 @@ namespace YProjectMedicalFlagger2
         private string saveFile;
         private string imageSaveFile;
 
-        Dictionary<string, DataNode> dataMap;
-        Dictionary<string, DataNode> imageMap;
+        private Dictionary<string, DataNode> dataMap = new();
+        private readonly Dictionary<string, DataNode> imageMap = new();
         private string[] categories;
-        private string[] imageCategories;
 
-
-        public PatientFlagger(string fileName, string[] files, int index)
+        public PatientFlagger(string fileName, string[] filesFromBefore, int index)
         {
             currentPatientName = fileName;
-            this.filesFromBefore = files;
+            this.filesFromBefore = filesFromBefore;
             this.index = index;
 
             InitializeComponent();
             InitializeFileList();
             InitializeImageList();
             patientNameLabel.Text = currentPatientName;
-            InitalizeListBox();
-            InitalizeImageListBox();
+            InitializeListBox();
+            InitializeImageListBox();
 
-            checkForSavedFile();
-            setIfSaved();
+            CheckForSavedFile();
+            SetIfSaved();
         }
 
         private void InitializeFileList()
         {
-            directoryPath = filesPath + "\\" + currentPatientName;
-            files = Directory.GetFiles(directoryPath).ToList();
-            saveFile = filesPath + "\\saves.csv";
-            imageSaveFile = directoryPath + "\\imageAttributes.csv";
+            directoryPath = Path.Combine(filesPath, currentPatientName);
+            files = new List<string>(Directory.GetFiles(directoryPath));
+            saveFile = Path.Combine(filesPath, "saves.csv");
+            imageSaveFile = Path.Combine(directoryPath, "imageAttributes.csv");
+
+            EnsureFileExists(saveFile);
+            EnsureFileExists(imageSaveFile);
         }
 
         private void InitializeImageList()
         {
             imageFiles = files.Where(file => file.EndsWith(".png") || file.EndsWith(".jpg")).ToArray();
-            imageMap = new Dictionary<string, DataNode>();
             isImageSaved = new bool[imageFiles.Length];
             currentIndex = 0;
-
         }
 
         private void DisplayCurrentImage()
@@ -67,14 +68,13 @@ namespace YProjectMedicalFlagger2
             if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
             {
                 pictureBox1.ImageLocation = imageFiles[currentIndex];
-                indexLabel.Text = (currentIndex + 1) + "/" + imageFiles.Length;
+                indexLabel.Text = $"{currentIndex + 1}/{imageFiles.Length}";
                 indexLabel.Show();
                 currentImageName = Path.GetFileName(imageFiles[currentIndex]);
-                checkForSavedImageFile();
-                setIfImageSaved();
-                
-            }
 
+                CheckForSavedImageFile();
+                SetIfImageSaved();
+            }
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -83,133 +83,107 @@ namespace YProjectMedicalFlagger2
             DisplayCurrentImage();
         }
 
-        private void InitalizeListBox()
+        private void InitializeListBox()
         {
-            string line;
             try
             {
-                line = File.ReadLines(saveFile).First();
+                string line = File.ReadLines(saveFile).First();
+                string[] firstLine = line.Split(';');
+                categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray();
+
+                foreach (string data in categories)
+                {
+                    patientListBox.Items.Add(data);
+                }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("No categories found in the save file, use admin panel to create categories.");
-                return;
-            }
-
-            string[] firstLine = line.Split(';');
-            categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray(); // skip the first element, which is the image name, and last element, which is the description
-
-            foreach (string data in categories)
-            {
-                patientListBox.Items.Add(data);
             }
         }
 
-        private void InitalizeImageListBox()
+        private void InitializeImageListBox()
         {
-            string line;
             try
             {
-                line = File.ReadLines(imageSaveFile).First();
+                string line = File.ReadLines(imageSaveFile).First();
+                string[] firstLine = line.Split(';');
+                categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray();
+
+                foreach (string data in categories)
+                {
+                    imageListBox.Items.Add(data);
+                }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("No categories found in the save file, use admin panel to create categories.");
-                return;
-            }
-
-            string[] firstLine = line.Split(';');
-            categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray(); // skip the first element, which is the image index, and last element, which is the description
-
-            foreach (string data in categories)
-            {
-                imageListBox.Items.Add(data);
             }
         }
 
-        private void checkForSavedFile()
+        private void CheckForSavedFile()
         {
-            dataMap = new Dictionary<string, DataNode>();
+            dataMap.Clear();
+            isSaved = false;
 
-            if (File.Exists(saveFile))
+            using StreamReader reader = new StreamReader(saveFile, Encoding.UTF8);
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
-                isSaved = false;
+                string[] fields = ParseCsvLine(line);
 
-                using (StreamReader reader = new StreamReader(saveFile))
+                if (fields.Length > 0 && fields[0] == currentPatientName)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    isSaved = true;
+                    bool[] data = new bool[fields.Length - 2];
+                    for (int i = 1; i < fields.Length - 1; i++)
                     {
-                        string[] fields = ParseCsvLine(line);
-
-                        if (fields.Length > 0 && fields[0] == currentPatientName)
-                        {
-                            isSaved = true;
-                            bool[] data = new bool[fields.Length - 2];
-                            for (int i = 1; i < fields.Length - 1; i++)
-                            {
-                                data[i - 1] = Convert.ToBoolean(fields[i]);
-                            }
-                            DataNode node = new DataNode(fields[0], data, fields[fields.Length - 1]);
-                            dataMap.Add(fields[0], node);
-                            break;
-                        }
+                        data[i - 1] = Convert.ToBoolean(fields[i]);
                     }
+                    DataNode node = new DataNode(fields[0], data, fields[^1]);
+                    dataMap.Add(fields[0], node);
+                    break;
                 }
             }
-            else
-            {
-                File.Create(saveFile).Dispose(); // Ensure the file is properly closed after creation
-            }
         }
 
-
-        private void checkForSavedImageFile()
+        private void CheckForSavedImageFile()
         {
+            isImageSaved[currentIndex] = false;
 
-
-            if (File.Exists(imageSaveFile))
+            using StreamReader reader = new StreamReader(imageSaveFile, Encoding.UTF8);
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
-                isImageSaved[currentIndex] = false;
+                string[] fields = ParseCsvLine(line);
 
-                using (StreamReader reader = new StreamReader(imageSaveFile))
+                if (fields.Length > 0 && fields[0] == currentImageName)
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    isImageSaved[currentIndex] = true;
+                    bool[] data = new bool[fields.Length - 2];
+                    for (int i = 1; i < fields.Length - 1; i++)
                     {
-                        string[] fields = ParseCsvLine(line);
-
-                        if (fields.Length > 0 && fields[0] == currentImageName)
-                        {
-                            isImageSaved[currentIndex] = true;
-                            bool[] data = new bool[fields.Length - 2];
-                            for (int i = 1; i < fields.Length - 1; i++)
-                            {
-                                data[i - 1] = Convert.ToBoolean(fields[i]);
-                            }
-                            DataNode node = new DataNode(fields[0], data, fields[fields.Length - 1]);
-                            if (imageMap.ContainsKey(currentImageName))
-                            {
-                                imageMap[currentImageName] = node;
-                            }
-                            else
-                            {
-                                imageMap.Add(currentImageName, node);
-                            }
-                            break;
-                        }
+                        data[i - 1] = Convert.ToBoolean(fields[i]);
                     }
+                    DataNode node = new DataNode(fields[0], data, fields[^1]);
+                    if (!imageMap.TryAdd(currentImageName, node))
+                    {
+                        imageMap[currentImageName] = node;
+                    }
+                    break;
                 }
             }
-            else
+        }
+
+        private static void EnsureFileExists(string path)
+        {
+            if (!File.Exists(path))
             {
-                File.Create(imageSaveFile).Dispose(); // Ensure the file is properly closed after creation
+                File.Create(path).Dispose();
             }
         }
 
-
-
-        private string[] ParseCsvLine(string line)
+        private static string[] ParseCsvLine(string line)
         {
             var fields = new List<string>();
             var sb = new StringBuilder();
@@ -239,7 +213,7 @@ namespace YProjectMedicalFlagger2
             return fields.ToArray();
         }
 
-        private void setIfSaved()
+        private void SetIfSaved()
         {
             if (isSaved)
             {
@@ -251,13 +225,10 @@ namespace YProjectMedicalFlagger2
                 }
                 patientTextBox.Text = node.description;
             }
-
         }
 
-
-        private void setIfImageSaved()
+        private void SetIfImageSaved()
         {
-            if (isImageSaved == null) return;
             if (isImageSaved[currentIndex])
             {
                 DataNode node = imageMap[currentImageName];
@@ -270,16 +241,15 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-
                 for (int i = 0; i < imageListBox.Items.Count; i++)
                 {
                     imageListBox.SetItemChecked(i, false);
                 }
-                imageTextBox.Text = "";
+                imageTextBox.Text = string.Empty;
             }
         }
 
-        private void savePatient()
+        private void SavePatient()
         {
             string data = currentPatientName + ";";
             for (int i = 0; i < patientListBox.Items.Count; i++)
@@ -287,12 +257,7 @@ namespace YProjectMedicalFlagger2
                 data += (patientListBox.GetItemChecked(i) ? "true" : "false") + ";";
             }
 
-            // Escape description by enclosing it in quotes if it contains a semicolon
-            string description = patientTextBox.Text;
-            if (description.Contains(";"))
-            {
-                description = "\"" + description.Replace("\"", "\"\"") + "\"";
-            }
+            string description = EscapeCsvField(patientTextBox.Text);
             data += description;
 
             if (isSaved)
@@ -311,14 +276,12 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                using (StreamWriter writer = new StreamWriter(saveFile, true))
-                {
-                    writer.WriteLine(data);
-                }
+                using StreamWriter writer = new StreamWriter(saveFile, true);
+                writer.WriteLine(data);
             }
         }
 
-        private void saveImage()
+        private void SaveImage()
         {
             string data = currentImageName + ";";
             for (int i = 0; i < imageListBox.Items.Count; i++)
@@ -326,15 +289,8 @@ namespace YProjectMedicalFlagger2
                 data += (imageListBox.GetItemChecked(i) ? "true" : "false") + ";";
             }
 
-            // Escape description by enclosing it in quotes if it contains a semicolon
-            string description = imageTextBox.Text;
-            //MessageBox.Show(description);
-            if (description.Contains(";"))
-            {
-                description = "\"" + description.Replace("\"", "\"\"") + "\"";
-            }
+            string description = EscapeCsvField(imageTextBox.Text);
             data += description;
-            MessageBox.Show(data);
 
             if (isImageSaved[currentIndex])
             {
@@ -352,61 +308,70 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                using (StreamWriter writer = new StreamWriter(imageSaveFile, true))
-                {
-                    writer.WriteLine(data);
-                }
+                using StreamWriter writer = new StreamWriter(imageSaveFile, true);
+                writer.WriteLine(data);
             }
         }
 
-
-
-        private void prev_Click(object sender, EventArgs e)
+        private static string EscapeCsvField(string field)
         {
-            currentIndex = (currentIndex - 1 + imageFiles.Length) % imageFiles.Length;
-            DisplayCurrentImage();
-        }
-
-        private void next_Click(object sender, EventArgs e)
-        {
-            currentIndex = (currentIndex + 1) % imageFiles.Length;
-            DisplayCurrentImage();
-        }
-
-        private void saveButton_Click(object sender, EventArgs e)
-        {
-            savePatient();
-        }
-
-        private void saveImageAttributes_Button_Click(object sender, EventArgs e)
-        {
-            saveImage();
-        }
-
-
-        private void nextPatientButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
-
-            if (index < filesFromBefore.Length)
+            if (field.Contains(';'))
             {
-                string filename = filesFromBefore[index];
-                string[] strings = filename.Split('\\');
-
-                PatientFlagger newForm = new PatientFlagger(strings.Last(), filesFromBefore, index + 1);
-
-                newForm.Show();
+                return "\"" + field.Replace("\"", "\"\"") + "\"";
             }
-            else
+            return field;
+        }
+
+        private void SavePatient_Button_Click(object sender, EventArgs e)
+        {
+            SavePatient();
+        }
+
+        private void NextPatientButton_Click(object sender, EventArgs e)
+        {
+            SavePatient();
+            SaveImage();
+            this.Close();
+            index++;
+
+            if (index >= filesFromBefore.Length)
             {
                 MessageBox.Show("No more patients to show.");
+                return;
+            }
+
+            string nextPatient = Path.GetFileNameWithoutExtension(filesFromBefore[index]);
+            Form nextPatientForm = new PatientFlagger(nextPatient, filesFromBefore, index);
+            nextPatientForm.Show();
+        }
+
+        private void SaveImageAttributes_Button_Click(object sender, EventArgs e)
+        {
+            SaveImage();
+        }
+
+        private void PreviousImageButton_Click(object sender, EventArgs e)
+        {
+            if (currentIndex > 0)
+            {
+                SaveImage();
+                currentIndex--;
+                DisplayCurrentImage();
             }
         }
 
-       
+        private void NextImageButton_Click(object sender, EventArgs e)
+        {
+            if (currentIndex < imageFiles.Length - 1)
+            {
+                SaveImage();
+                currentIndex++;
+                DisplayCurrentImage();
+            }
+        }
     }
 
-    class DataNode
+    public class DataNode
     {
         public string name;
         public bool[] data;

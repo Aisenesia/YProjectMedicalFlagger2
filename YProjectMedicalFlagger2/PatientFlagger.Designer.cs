@@ -63,7 +63,7 @@ namespace YProjectMedicalFlagger2
             next.TabIndex = 1;
             next.Text = "Sonraki";
             next.UseVisualStyleBackColor = true;
-            next.Click += next_Click;
+            next.Click += NextImageButton_Click;
             // 
             // prev
             // 
@@ -73,7 +73,7 @@ namespace YProjectMedicalFlagger2
             prev.TabIndex = 2;
             prev.Text = "Önceki";
             prev.UseVisualStyleBackColor = true;
-            prev.Click += prev_Click;
+            prev.Click += PreviousImageButton_Click;
             // 
             // patientListBox
             // 
@@ -108,7 +108,7 @@ namespace YProjectMedicalFlagger2
             savePatient_Button.TabIndex = 6;
             savePatient_Button.Text = "Kaydet";
             savePatient_Button.UseVisualStyleBackColor = true;
-            savePatient_Button.Click += saveButton_Click;
+            savePatient_Button.Click += SavePatient_Button_Click;
             // 
             // indexLabel
             // 
@@ -128,7 +128,7 @@ namespace YProjectMedicalFlagger2
             nextPatientButton.TabIndex = 10;
             nextPatientButton.Text = "Sonraki";
             nextPatientButton.UseVisualStyleBackColor = true;
-            nextPatientButton.Click += nextPatientButton_Click;
+            nextPatientButton.Click += NextPatientButton_Click;
             // 
             // patientLabel
             // 
@@ -172,7 +172,7 @@ namespace YProjectMedicalFlagger2
             saveImageAttributes_Button.TabIndex = 16;
             saveImageAttributes_Button.Text = "Kaydet";
             saveImageAttributes_Button.UseVisualStyleBackColor = true;
-            saveImageAttributes_Button.Click += saveImageAttributes_Button_Click;
+            saveImageAttributes_Button.Click += SaveImageAttributes_Button_Click;
             // 
             // PatientFlagger
             // 

@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace YProjectMedicalFlagger2
 {
     internal static class Program
@@ -10,6 +12,7 @@ namespace YProjectMedicalFlagger2
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ApplicationConfiguration.Initialize();
             Application.Run(new PatientSelect());
         }

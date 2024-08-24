@@ -70,9 +70,7 @@ namespace YProjectMedicalFlagger2
             listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
         }
 
-        private void selectPatientLabel_Click(object sender, EventArgs e)
-        {
-
-        }
+      
+        
     }
 }

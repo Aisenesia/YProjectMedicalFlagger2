@@ -44,7 +44,7 @@
             // 
             // selectButton
             // 
-            selectButton.Location = new Point(694, 409);
+            selectButton.Location = new Point(694, 389);
             selectButton.Name = "selectButton";
             selectButton.Size = new Size(94, 29);
             selectButton.TabIndex = 1;
@@ -60,18 +60,19 @@
             selectPatientLabel.Size = new Size(100, 20);
             selectPatientLabel.TabIndex = 2;
             selectPatientLabel.Text = "Hasta Seçiniz:";
-            selectPatientLabel.Click += selectPatientLabel_Click;
+            
             // 
             // PatientSelect
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 427);
             Controls.Add(selectPatientLabel);
             Controls.Add(selectButton);
             Controls.Add(listBox1);
             Name = "PatientSelect";
             Text = "Form1";
+            
             ResumeLayout(false);
             PerformLayout();
         }
