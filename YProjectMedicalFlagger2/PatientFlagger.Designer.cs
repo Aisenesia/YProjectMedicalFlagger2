@@ -43,6 +43,7 @@ namespace YProjectMedicalFlagger2
             imageListBox = new CheckedListBox();
             imageTextBox = new RichTextBox();
             saveImageAttributes_Button = new Button();
+            PreviousPatientButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -57,7 +58,7 @@ namespace YProjectMedicalFlagger2
             // 
             // next
             // 
-            next.Location = new Point(598, 680);
+            next.Location = new Point(338, 680);
             next.Name = "next";
             next.Size = new Size(94, 29);
             next.TabIndex = 1;
@@ -67,7 +68,7 @@ namespace YProjectMedicalFlagger2
             // 
             // prev
             // 
-            prev.Location = new Point(12, 680);
+            prev.Location = new Point(247, 680);
             prev.Name = "prev";
             prev.Size = new Size(94, 29);
             prev.TabIndex = 2;
@@ -113,7 +114,7 @@ namespace YProjectMedicalFlagger2
             // indexLabel
             // 
             indexLabel.AutoSize = true;
-            indexLabel.Location = new Point(279, 680);
+            indexLabel.Location = new Point(277, 650);
             indexLabel.Name = "indexLabel";
             indexLabel.Size = new Size(132, 20);
             indexLabel.TabIndex = 7;
@@ -174,11 +175,22 @@ namespace YProjectMedicalFlagger2
             saveImageAttributes_Button.UseVisualStyleBackColor = true;
             saveImageAttributes_Button.Click += SaveImageAttributes_Button_Click;
             // 
+            // PreviousPatientButton
+            // 
+            PreviousPatientButton.Location = new Point(12, 680);
+            PreviousPatientButton.Name = "PreviousPatientButton";
+            PreviousPatientButton.Size = new Size(94, 29);
+            PreviousPatientButton.TabIndex = 0;
+            PreviousPatientButton.Text = "Önceki";
+            PreviousPatientButton.UseVisualStyleBackColor = true;
+            PreviousPatientButton.Click += PreviousPatientButton_Click;
+            // 
             // PatientFlagger
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1262, 721);
+            Controls.Add(PreviousPatientButton);
             Controls.Add(saveImageAttributes_Button);
             Controls.Add(imageTextBox);
             Controls.Add(imageListBox);
@@ -222,5 +234,6 @@ namespace YProjectMedicalFlagger2
         private CheckedListBox imageListBox;
         private RichTextBox imageTextBox;
         private Button saveImageAttributes_Button;
+        private Button PreviousPatientButton;
     }
 }

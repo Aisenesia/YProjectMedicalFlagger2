@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace YProjectMedicalFlagger2
 {
@@ -14,7 +15,7 @@ namespace YProjectMedicalFlagger2
         private readonly string[] filesFromBefore; // All the files in the directory
         private int index; // Current patient's index in the files array
 
-        private readonly string currentPatientName;
+        private string currentPatientName;
         private bool isSaved;
         private bool[] isImageSaved;
 
@@ -100,6 +101,7 @@ namespace YProjectMedicalFlagger2
             {
                 MessageBox.Show("No categories found in the save file, use admin panel to create categories.");
             }
+
         }
 
         private void InitializeImageListBox()
@@ -215,17 +217,28 @@ namespace YProjectMedicalFlagger2
 
         private void SetIfSaved()
         {
-            if (isSaved)
+            if (isSaved && dataMap.ContainsKey(currentPatientName))
             {
                 DataNode node = dataMap[currentPatientName];
                 bool[] data = node.data;
                 for (int i = 0; i < data.Length; i++)
                 {
-                    patientListBox.SetItemChecked(i, data[i]);
+                    // Ensure the list has enough items before setting them as checked
+                    if (i < patientListBox.Items.Count)
+                    {
+                        patientListBox.SetItemChecked(i, data[i]);
+                    }
                 }
                 patientTextBox.Text = node.description;
             }
+            else
+            {
+                // Handle case where patient data is not found
+                patientTextBox.Clear();
+                patientListBox.ClearSelected();
+            }
         }
+
 
         private void SetIfImageSaved()
         {
@@ -327,23 +340,97 @@ namespace YProjectMedicalFlagger2
             SavePatient();
         }
 
+        private void ClearFormData()
+        {
+            // Clear list boxes and text boxes
+            patientListBox.Items.Clear();
+            imageListBox.Items.Clear();
+            patientTextBox.Clear();
+            imageTextBox.Clear();
+
+            // Reset other controls as needed
+            pictureBox1.Image = null;
+            indexLabel.Hide();
+            isSaved = false;
+            isImageSaved = null; // Reset the saved image state
+            currentIndex = 0;
+
+            // Clear dictionaries if needed
+            dataMap.Clear();
+            imageMap.Clear();
+        }
+
+        private void LoadPatientData(string patientName, string[] files, int patientIndex)
+        {
+            // Update class fields with the new patient info
+            currentPatientName = patientName;
+            this.index = patientIndex;
+
+            // Reinitialize file lists and load data
+            InitializeFileList();
+            InitializeImageList();
+
+            // Fetch categories for the new patient
+            InitializeListBox();   // Reload the categories for the new patient
+            InitializeImageListBox();
+
+            // Update labels and display new patient data
+            patientNameLabel.Text = currentPatientName;
+            DisplayCurrentImage();
+            CheckForSavedFile();
+            SetIfSaved();
+        }
+
         private void NextPatientButton_Click(object sender, EventArgs e)
         {
+            // Save current patient data before moving to the next one
             SavePatient();
             SaveImage();
-            this.Close();
+
+            // Increment the index to move to the next patient
             index++;
 
+            // Check if we are at the last patient
             if (index >= filesFromBefore.Length)
             {
                 MessageBox.Show("No more patients to show.");
+                index = filesFromBefore.Length - 1; // Ensure the index doesn't go out of bounds
                 return;
             }
 
+            // Clear existing form data
+            ClearFormData();
+
+            // Load the next patient data into the form
             string nextPatient = Path.GetFileNameWithoutExtension(filesFromBefore[index]);
-            Form nextPatientForm = new PatientFlagger(nextPatient, filesFromBefore, index);
-            nextPatientForm.Show();
+            LoadPatientData(nextPatient, filesFromBefore, index);
         }
+
+        private void PreviousPatientButton_Click(object sender, EventArgs e)
+        {
+            // Save current patient data before moving to the previous one
+            SavePatient();
+            SaveImage();
+
+            // Decrement the index to move to the previous patient
+            index--;
+
+            // Check if we are at the first patient
+            if (index < 0)
+            {
+                MessageBox.Show("No previous patients to show.");
+                index = 0; // Ensure the index doesn't go below 0
+                return;
+            }
+
+            // Clear existing form data
+            ClearFormData();
+
+            // Load the previous patient data into the form
+            string previousPatient = Path.GetFileNameWithoutExtension(filesFromBefore[index]);
+            LoadPatientData(previousPatient, filesFromBefore, index);
+        }
+
 
         private void SaveImageAttributes_Button_Click(object sender, EventArgs e)
         {
@@ -369,6 +456,8 @@ namespace YProjectMedicalFlagger2
                 DisplayCurrentImage();
             }
         }
+
+        
     }
 
     public class DataNode
