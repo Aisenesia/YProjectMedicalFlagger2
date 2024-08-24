@@ -7,10 +7,11 @@ namespace YProjectMedicalFlagger2
 
         public PatientSelect()
         {
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             InitializeComponent();
             this.Load += Form1_Load;
             selectedFile = string.Empty;
-            files = new string[0];
+            files = [];
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -30,7 +31,7 @@ namespace YProjectMedicalFlagger2
                 }
                 else
                 {
-                    MessageBox.Show("No files found in the directory.");
+                    MessageBox.Show("Hasta klasörü bulunamadý.");
                 }
             }
             else
@@ -39,39 +40,24 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBox1.SelectedItem != null)
+            if (listBox1.Items.Count > 0 && listBox1.SelectedItem != null)
             {
                 selectedFile = listBox1.SelectedItem.ToString();
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SelectButton_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(selectedFile))
             {
                 int index = listBox1.SelectedIndex;
-                PatientFlagger2 form2 = new PatientFlagger2(selectedFile, files, index);
+                PatientFlagger2 patientFlagger = new(selectedFile, files, index);
                 //TODO - Switch when building for release
-                form2.Show();
+                this.Hide();
+                patientFlagger.Show();
             }
         }
-
-        private void InitializeListBox()
-        {
-            listBox1 = new ListBox
-            {
-                FormattingEnabled = true,
-                Location = new Point(12, 54),
-                Name = "listBox1",
-                Size = new Size(322, 364),
-                TabIndex = 0
-            };
-            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
-        }
-
-      
-        
     }
 }

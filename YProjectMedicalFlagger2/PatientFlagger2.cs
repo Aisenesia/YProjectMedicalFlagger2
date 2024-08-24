@@ -1,8 +1,5 @@
 ﻿using System.Data;
-using System.Diagnostics;
 using System.Text;
-using System.IO;
-using System.Windows.Forms;
 
 namespace YProjectMedicalFlagger2
 {
@@ -24,15 +21,25 @@ namespace YProjectMedicalFlagger2
         private string currentImageName;
         private string saveFile;
         private string imageSaveFile;
+        private string imageCategoryFile;
 
-        private Dictionary<string, StringNode> dataMap = new();
-        private readonly Dictionary<string, DataNode> imageMap = new();
+        private readonly Dictionary<string, StringNode> dataMap = new();
+        private readonly Dictionary<string, DataNode> imageMap = [];
         private string[] categories;
         private ListViewItem.ListViewSubItem subItemToEdit;
         private TextBox editBox;
+        private bool isDataChanged = false;
+
+        // Set to false to disable backups
+        private const bool takeBackups = true;
+
+        public static string FilesPath => filesPath;
 
         public PatientFlagger2(string fileName, string[] filesFromBefore, int index)
         {
+
+
+
             currentPatientName = fileName;
             this.filesFromBefore = filesFromBefore;
             this.index = index;
@@ -50,10 +57,11 @@ namespace YProjectMedicalFlagger2
         }
         private void InitializeFileList()
         {
-            directoryPath = Path.Combine(filesPath, currentPatientName);
+            directoryPath = Path.Combine(FilesPath, currentPatientName);
             files = new List<string>(Directory.GetFiles(directoryPath));
-            saveFile = Path.Combine(filesPath, "saves.csv");
-            imageSaveFile = Path.Combine(directoryPath, "imageAttributes.csv");
+            saveFile = Path.Combine(FilesPath, "Hastalar.csv");
+            imageSaveFile = Path.Combine(directoryPath, "Resimler.csv");
+            imageCategoryFile = Path.Combine(FilesPath, "Kategoriler.csv");
 
             EnsureFileExists(saveFile);
             EnsureFileExists(imageSaveFile);
@@ -77,6 +85,7 @@ namespace YProjectMedicalFlagger2
 
                 CheckForSavedImageFile();
                 SetIfImageSaved();
+                isDataChanged = false;
             }
         }
 
@@ -110,7 +119,7 @@ namespace YProjectMedicalFlagger2
         {
             try
             {
-                string line = File.ReadLines(imageSaveFile).First();
+                string line = File.ReadLines(imageCategoryFile).First();
                 string[] firstLine = line.Split(';');
                 categories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray();
 
@@ -141,7 +150,7 @@ namespace YProjectMedicalFlagger2
             dataMap.Clear();
             isSaved = false;
 
-            using StreamReader reader = new StreamReader(saveFile, Encoding.UTF8);
+            using StreamReader reader = new(saveFile, Encoding.UTF8);
             string line;
             while ((line = reader.ReadLine()) != null)
             {
@@ -155,18 +164,25 @@ namespace YProjectMedicalFlagger2
                     {
                         data[i - 1] = fields[i];
                     }
-                    StringNode node = new StringNode(fields[0], data, fields[^1]);
+                    StringNode node = new(fields[0], data, fields[^1]);
                     dataMap.Add(fields[0], node);
                     break;
                 }
             }
         }
 
+        private void FetchImageCategories()
+        {
+
+
+
+        }
+
         private void CheckForSavedImageFile()
         {
             isImageSaved[currentIndex] = false;
 
-            using StreamReader reader = new StreamReader(imageSaveFile, Encoding.UTF8);
+            using StreamReader reader = new(imageSaveFile, Encoding.UTF8);
             string line;
             while ((line = reader.ReadLine()) != null)
             {
@@ -180,7 +196,7 @@ namespace YProjectMedicalFlagger2
                     {
                         data[i - 1] = Convert.ToBoolean(fields[i]);
                     }
-                    DataNode node = new DataNode(fields[0], data, fields[^1]);
+                    DataNode node = new(fields[0], data, fields[^1]);
                     if (!imageMap.TryAdd(currentImageName, node))
                     {
                         imageMap[currentImageName] = node;
@@ -190,11 +206,15 @@ namespace YProjectMedicalFlagger2
             }
         }
 
+        // ...
+
         private static void EnsureFileExists(string path)
         {
             if (!File.Exists(path))
             {
-                File.Create(path).Dispose();
+                MessageBox.Show("Dosya bulunamadı: " + path, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                Environment.Exit(0);
             }
         }
 
@@ -230,9 +250,9 @@ namespace YProjectMedicalFlagger2
 
         private void SetIfSaved()
         {
-            if (isSaved && dataMap.ContainsKey(currentPatientName))
+            if (isSaved && dataMap.TryGetValue(currentPatientName, out StringNode? value))
             {
-                StringNode node = dataMap[currentPatientName];
+                StringNode node = value;
                 string[] data = node.data;
                 for (int i = 0; i < data.Length; i++)
                 {
@@ -286,6 +306,7 @@ namespace YProjectMedicalFlagger2
 
         private void SavePatient()
         {
+
             string data = currentPatientName + ";";
             for (int i = 0; i < patientListView.Items.Count; i++)
             {
@@ -297,6 +318,9 @@ namespace YProjectMedicalFlagger2
 
             string description = EscapeCsvField(patientTextBox.Text);
             data += description;
+
+            isDataChanged = false;
+            TakeBackups(saveFile);
 
             if (isSaved)
             {
@@ -314,7 +338,10 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                using StreamWriter writer = new StreamWriter(saveFile, true);
+                
+                using StreamWriter writer = new(saveFile, true);
+
+
                 writer.WriteLine(data);
             }
         }
@@ -329,6 +356,9 @@ namespace YProjectMedicalFlagger2
 
             string description = EscapeCsvField(imageTextBox.Text);
             data += description;
+
+            TakeBackups(imageSaveFile);
+            isDataChanged = false;
 
             if (isImageSaved[currentIndex])
             {
@@ -346,7 +376,8 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                using StreamWriter writer = new StreamWriter(imageSaveFile, true);
+                
+                using StreamWriter writer = new(imageSaveFile, true);
                 writer.WriteLine(data);
             }
         }
@@ -385,7 +416,7 @@ namespace YProjectMedicalFlagger2
             imageMap.Clear();
         }
 
-        private void LoadPatientData(string patientName, string[] files, int patientIndex)
+        private void LoadPatientData(string patientName, int patientIndex)
         {
             // Update class fields with the new patient info
             currentPatientName = patientName;
@@ -404,13 +435,14 @@ namespace YProjectMedicalFlagger2
             DisplayCurrentImage();
             CheckForSavedFile();
             SetIfSaved();
+            isDataChanged = false;
         }
 
         private void NextPatientButton_Click(object sender, EventArgs e)
         {
-            // Save current patient data before moving to the next one
-            //SavePatient();
-            //SaveImage();
+
+            // SavePatient();
+            // SaveImage();
 
             // Increment the index to move to the next patient
 
@@ -419,7 +451,7 @@ namespace YProjectMedicalFlagger2
             // Check if we are at the last patient
             if (index >= filesFromBefore.Length)
             {
-                MessageBox.Show("No more patients to show.");
+                MessageBox.Show("Gösterilecek hasta kalmadı.");
                 index = filesFromBefore.Length - 1; // Ensure the index doesn't go out of bounds
                 return;
             }
@@ -429,15 +461,14 @@ namespace YProjectMedicalFlagger2
 
             // Load the next patient data into the form
             string nextPatient = Path.GetFileNameWithoutExtension(filesFromBefore[index]);
-            LoadPatientData(nextPatient, filesFromBefore, index);
-
+            LoadPatientData(nextPatient, index);
         }
 
         private void PreviousPatientButton_Click(object sender, EventArgs e)
         {
             // Save current patient data before moving to the previous one
             //SavePatient();
-            SaveImage();
+            //SaveImage();
 
             // Decrement the index to move to the previous patient
 
@@ -450,51 +481,39 @@ namespace YProjectMedicalFlagger2
                 index = 0; // Ensure the index doesn't go below 0
                 return;
             }
-
             // Clear existing form data
             ClearFormData();
-
             // Load the previous patient data into the form
             string previousPatient = Path.GetFileNameWithoutExtension(filesFromBefore[index]);
-            LoadPatientData(previousPatient, filesFromBefore, index);
-
+            LoadPatientData(previousPatient, index);
         }
-
 
         private void SaveImageAttributes_Button_Click(object sender, EventArgs e)
         {
             SaveImage();
         }
-
         private void PreviousImageButton_Click(object sender, EventArgs e)
         {
-            if (currentIndex > 0)
-            {
-                SaveImage();
-                currentIndex--;
-                DisplayCurrentImage();
-            }
+            SaveImage();
+            currentIndex = currentIndex > 0 ? currentIndex - 1 : imageFiles.Length - 1;
+            DisplayCurrentImage();
         }
-
         private void NextImageButton_Click(object sender, EventArgs e)
         {
-            if (currentIndex < imageFiles.Length - 1)
-            {
-                //SaveImage();
-                currentIndex++;
-                DisplayCurrentImage();
-            }
+            SaveImage();
+            currentIndex = currentIndex < imageFiles.Length - 1 ? currentIndex + 1 : 0;
+
+            DisplayCurrentImage();
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox_Click(object sender, EventArgs e)
         {
             if (pictureBox1.Image != null)
             {
-                FullScreenImageForm fullScreenImageForm = new FullScreenImageForm(pictureBox1.Image);
+                FullScreenImageForm fullScreenImageForm = new(pictureBox1.Image);
                 fullScreenImageForm.ShowDialog(); // Show the form as a modal dialog
             }
         }
-
 
         private void ListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -525,36 +544,77 @@ namespace YProjectMedicalFlagger2
                 UpdateSubItem();
             }
         }
-        
 
         private void UpdateSubItem()
         {
             if (subItemToEdit != null)
             {
+                isDataChanged = true;
                 subItemToEdit.Text = editBox.Text;
                 editBox.Visible = false;
                 subItemToEdit = null;
             }
         }
 
-        
-    }
 
-    public class StringNode
-    {
-        public string[] data;
-        public string description;
-        public string name;
 
-        public StringNode(string name, string[] data, string description)
+        private void PatientFlagger2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.name = name;
-            this.data = data;
-            this.description = description;
+            if (isDataChanged)
+            {
+                DialogResult dialogResult = MessageBox.Show("Değişiklikler kaydedilsin mi?", "Kayıt", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    SavePatient();
+                    SaveImage();
+                }
+            }
+
+
+            Form? form = Application.OpenForms["PatientSelect"];
+            if (form != null)
+            {
+                form.Show();
+            }
+
+
+        }
+
+        private void imageListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            isDataChanged = true;
+        }
+
+        private void patientTextBox_TextChanged(object sender, EventArgs e)
+        {
+            isDataChanged = true;
+        }
+
+        private void imageTextBox_TextChanged(object sender, EventArgs e)
+        {
+            isDataChanged = true;
+        }
+
+        private void TakeBackups(string save)
+        {
+            if (takeBackups)
+            {
+                string backupFile = save + ".bak";
+                if (File.Exists(backupFile))
+                {
+                    File.Delete(backupFile);
+                }
+                File.Copy(save, backupFile);
+            }
         }
     }
 
-
+    public class StringNode(string name, string[] data, string description)
+    {
+        public string[] data = data;
+        public string description = description;
+        public string name = name;
+    }
 }
 
 

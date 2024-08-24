@@ -57,7 +57,7 @@ namespace YProjectMedicalFlagger2
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+            pictureBox1.Click += PictureBox_Click;
             // 
             // next
             // 
@@ -86,6 +86,7 @@ namespace YProjectMedicalFlagger2
             patientTextBox.Size = new Size(344, 120);
             patientTextBox.TabIndex = 4;
             patientTextBox.Text = "";
+            patientTextBox.TextChanged += patientTextBox_TextChanged;
             // 
             // label1
             // 
@@ -151,6 +152,7 @@ namespace YProjectMedicalFlagger2
             imageListBox.Name = "imageListBox";
             imageListBox.Size = new Size(202, 444);
             imageListBox.TabIndex = 14;
+            imageListBox.ItemCheck += imageListBox_ItemCheck;
             // 
             // imageTextBox
             // 
@@ -159,6 +161,7 @@ namespace YProjectMedicalFlagger2
             imageTextBox.Size = new Size(202, 150);
             imageTextBox.TabIndex = 15;
             imageTextBox.Text = "";
+            imageTextBox.TextChanged += imageTextBox_TextChanged;
             // 
             // saveImageAttributes_Button
             // 
@@ -223,8 +226,9 @@ namespace YProjectMedicalFlagger2
             Controls.Add(prev);
             Controls.Add(next);
             Controls.Add(pictureBox1);
+            Icon = Properties.Resources.icon;
             Name = "PatientFlagger2";
-            Text = "Form2";
+            FormClosing += PatientFlagger2_FormClosing;
             Load += Form2_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

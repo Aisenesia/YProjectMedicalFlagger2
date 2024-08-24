@@ -40,7 +40,7 @@
             listBox1.Name = "listBox1";
             listBox1.Size = new Size(576, 364);
             listBox1.TabIndex = 0;
-            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             // 
             // selectButton
             // 
@@ -50,7 +50,7 @@
             selectButton.TabIndex = 1;
             selectButton.Text = "Seç";
             selectButton.UseVisualStyleBackColor = true;
-            selectButton.Click += button1_Click;
+            selectButton.Click += SelectButton_Click;
             // 
             // selectPatientLabel
             // 
@@ -71,14 +71,15 @@
             Controls.Add(selectButton);
             Controls.Add(listBox1);
             Name = "PatientSelect";
-            Text = "Form1";
-            
+            Text = "Hasta Seçici";
+            this.Icon = Properties.Resources.icon;
+
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
+        
         private ListBox listBox1;
         private Button selectButton;
         private Label selectPatientLabel;
