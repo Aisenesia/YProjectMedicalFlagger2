@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using System.Text;
 
 namespace YProjectMedicalFlagger2
@@ -91,7 +92,7 @@ namespace YProjectMedicalFlagger2
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            label1.Text = "Ek notlar:";
+            //label1.Text = "Ek notlar:";
             DisplayCurrentImage();
         }
 
@@ -107,6 +108,7 @@ namespace YProjectMedicalFlagger2
                 {
                     patientListView.Items.Add(data);
                 }
+                patientListView.AutoArrange = true;
             }
             catch (Exception)
             {
@@ -338,7 +340,7 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                
+
                 using StreamWriter writer = new(saveFile, true);
 
 
@@ -376,7 +378,7 @@ namespace YProjectMedicalFlagger2
             }
             else
             {
-                
+
                 using StreamWriter writer = new(imageSaveFile, true);
                 writer.WriteLine(data);
             }
@@ -517,6 +519,7 @@ namespace YProjectMedicalFlagger2
 
         private void ListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+           
             ListViewHitTestInfo hitTestInfo = patientListView.HitTest(e.Location);
             if (hitTestInfo.SubItem != null && hitTestInfo.Item.SubItems.IndexOf(hitTestInfo.SubItem) == 1)
             {
@@ -605,6 +608,26 @@ namespace YProjectMedicalFlagger2
                     File.Delete(backupFile);
                 }
                 File.Copy(save, backupFile);
+            }
+        }
+
+        private void patientListView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (patientListView.SelectedItems.Count > 0)
+                {
+                    ListViewItem selectedItem = patientListView.SelectedItems[0];
+                    subItemToEdit = selectedItem.SubItems[1];
+                    Rectangle subItemBounds = subItemToEdit.Bounds;
+                    Point subItemLocation = patientListView.PointToScreen(subItemBounds.Location);
+                    Point editBoxLocation = this.PointToClient(subItemLocation);
+                    editBox.Bounds = new Rectangle(editBoxLocation, subItemBounds.Size);
+                    editBox.Text = subItemToEdit.Text;
+                    editBox.Visible = true;
+                    editBox.BringToFront();
+                    editBox.Focus();
+                }
             }
         }
     }

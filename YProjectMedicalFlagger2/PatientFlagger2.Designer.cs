@@ -29,16 +29,12 @@ namespace YProjectMedicalFlagger2
         /// </summary>
         private void InitializeComponent()
         {
-            pictureBox1 = new PictureBox();
             next = new Button();
             prev = new Button();
             patientTextBox = new RichTextBox();
-            label1 = new Label();
             savePatient_Button = new Button();
             indexLabel = new Label();
             nextPatientButton = new Button();
-            patientLabel = new Label();
-            patientNameLabel = new Label();
             imageListBox = new CheckedListBox();
             imageTextBox = new RichTextBox();
             saveImageAttributes_Button = new Button();
@@ -46,60 +42,54 @@ namespace YProjectMedicalFlagger2
             patientListView = new ListView();
             Categories = new ColumnHeader();
             Values = new ColumnHeader();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            patientLabel = new Label();
+            patientNameLabel = new Label();
+            pictureBox1 = new PictureBox();
+            tableLayoutPanel1.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Location = new Point(12, 47);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(680, 600);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
-            pictureBox1.Click += PictureBox_Click;
-            // 
             // next
             // 
-            next.Location = new Point(347, 680);
+            next.Location = new Point(576, 3);
             next.Name = "next";
-            next.Size = new Size(94, 29);
+            next.Size = new Size(122, 28);
             next.TabIndex = 1;
-            next.Text = "Sonraki";
+            next.Text = "Sonraki Resim";
             next.UseVisualStyleBackColor = true;
             next.Click += NextImageButton_Click;
             // 
             // prev
             // 
-            prev.Location = new Point(247, 680);
+            prev.Location = new Point(3, 3);
             prev.Name = "prev";
-            prev.Size = new Size(94, 29);
+            prev.Size = new Size(122, 28);
             prev.TabIndex = 2;
-            prev.Text = "Önceki";
+            prev.Text = "Önceki Resim";
             prev.UseVisualStyleBackColor = true;
             prev.Click += PreviousImageButton_Click;
             // 
             // patientTextBox
             // 
-            patientTextBox.Location = new Point(906, 527);
+            patientTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            patientTextBox.Location = new Point(265, 392);
             patientTextBox.Name = "patientTextBox";
-            patientTextBox.Size = new Size(344, 120);
+            patientTextBox.Size = new Size(257, 203);
             patientTextBox.TabIndex = 4;
             patientTextBox.Text = "";
             patientTextBox.TextChanged += patientTextBox_TextChanged;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(975, 504);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 20);
-            label1.TabIndex = 5;
-            label1.Text = "descriptionsLabel";
-            // 
             // savePatient_Button
             // 
-            savePatient_Button.Location = new Point(975, 680);
+            savePatient_Button.Anchor = AnchorStyles.None;
+            savePatient_Button.Location = new Point(346, 603);
             savePatient_Button.Name = "savePatient_Button";
             savePatient_Button.Size = new Size(94, 29);
             savePatient_Button.TabIndex = 6;
@@ -109,63 +99,51 @@ namespace YProjectMedicalFlagger2
             // 
             // indexLabel
             // 
+            indexLabel.Anchor = AnchorStyles.None;
             indexLabel.AutoSize = true;
-            indexLabel.Location = new Point(277, 650);
+            indexLabel.Location = new Point(284, 7);
             indexLabel.Name = "indexLabel";
             indexLabel.Size = new Size(132, 20);
             indexLabel.TabIndex = 7;
             indexLabel.Text = "Resim bulunamadı";
-            indexLabel.TextAlign = ContentAlignment.TopCenter;
+            indexLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // nextPatientButton
             // 
-            nextPatientButton.Location = new Point(1156, 680);
+            nextPatientButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            nextPatientButton.Location = new Point(1125, 712);
             nextPatientButton.Name = "nextPatientButton";
-            nextPatientButton.Size = new Size(94, 29);
+            nextPatientButton.Size = new Size(122, 29);
             nextPatientButton.TabIndex = 10;
-            nextPatientButton.Text = "Sonraki";
+            nextPatientButton.Text = "Sonraki Hasta";
             nextPatientButton.UseVisualStyleBackColor = true;
             nextPatientButton.Click += NextPatientButton_Click;
             // 
-            // patientLabel
-            // 
-            patientLabel.AutoSize = true;
-            patientLabel.Location = new Point(12, 24);
-            patientLabel.Name = "patientLabel";
-            patientLabel.Size = new Size(54, 20);
-            patientLabel.TabIndex = 12;
-            patientLabel.Text = "Hasta: ";
-            // 
-            // patientNameLabel
-            // 
-            patientNameLabel.AutoSize = true;
-            patientNameLabel.Location = new Point(82, 24);
-            patientNameLabel.Name = "patientNameLabel";
-            patientNameLabel.Size = new Size(35, 20);
-            patientNameLabel.TabIndex = 13;
-            patientNameLabel.Text = "doe";
-            // 
             // imageListBox
             // 
+            imageListBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             imageListBox.FormattingEnabled = true;
-            imageListBox.Location = new Point(698, 47);
+            imageListBox.Location = new Point(3, 3);
             imageListBox.Name = "imageListBox";
-            imageListBox.Size = new Size(202, 444);
+            imageListBox.Size = new Size(256, 378);
             imageListBox.TabIndex = 14;
             imageListBox.ItemCheck += imageListBox_ItemCheck;
             // 
             // imageTextBox
             // 
-            imageTextBox.Location = new Point(698, 497);
+            imageTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            imageTextBox.Location = new Point(3, 392);
             imageTextBox.Name = "imageTextBox";
-            imageTextBox.Size = new Size(202, 150);
+            imageTextBox.Size = new Size(256, 203);
             imageTextBox.TabIndex = 15;
             imageTextBox.Text = "";
             imageTextBox.TextChanged += imageTextBox_TextChanged;
             // 
             // saveImageAttributes_Button
             // 
-            saveImageAttributes_Button.Location = new Point(698, 680);
+            saveImageAttributes_Button.Anchor = AnchorStyles.None;
+            saveImageAttributes_Button.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            saveImageAttributes_Button.Location = new Point(84, 603);
             saveImageAttributes_Button.Name = "saveImageAttributes_Button";
             saveImageAttributes_Button.Size = new Size(94, 29);
             saveImageAttributes_Button.TabIndex = 16;
@@ -175,22 +153,24 @@ namespace YProjectMedicalFlagger2
             // 
             // PreviousPatientButton
             // 
-            PreviousPatientButton.Location = new Point(12, 680);
+            PreviousPatientButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            PreviousPatientButton.Location = new Point(18, 712);
             PreviousPatientButton.Name = "PreviousPatientButton";
-            PreviousPatientButton.Size = new Size(94, 29);
+            PreviousPatientButton.Size = new Size(122, 29);
             PreviousPatientButton.TabIndex = 0;
-            PreviousPatientButton.Text = "Önceki";
+            PreviousPatientButton.Text = "Önceki Hasta";
             PreviousPatientButton.UseVisualStyleBackColor = true;
             PreviousPatientButton.Click += PreviousPatientButton_Click;
             // 
             // patientListView
             // 
+            patientListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             patientListView.Columns.AddRange(new ColumnHeader[] { Categories, Values });
             patientListView.FullRowSelect = true;
             patientListView.GridLines = true;
-            patientListView.Location = new Point(906, 47);
+            patientListView.Location = new Point(265, 3);
             patientListView.Name = "patientListView";
-            patientListView.Size = new Size(344, 444);
+            patientListView.Size = new Size(257, 383);
             patientListView.TabIndex = 0;
             patientListView.UseCompatibleStateImageBehavior = false;
             patientListView.View = View.Details;
@@ -206,33 +186,130 @@ namespace YProjectMedicalFlagger2
             Values.Text = "Değer";
             Values.Width = 210;
             // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Controls.Add(imageTextBox, 0, 1);
+            tableLayoutPanel1.Controls.Add(patientTextBox, 1, 1);
+            tableLayoutPanel1.Controls.Add(saveImageAttributes_Button, 0, 2);
+            tableLayoutPanel1.Controls.Add(imageListBox, 0, 0);
+            tableLayoutPanel1.Controls.Add(patientListView, 1, 0);
+            tableLayoutPanel1.Controls.Add(savePatient_Button, 1, 2);
+            tableLayoutPanel1.Location = new Point(725, 47);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 4;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 65F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 35F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new Size(525, 659);
+            tableLayoutPanel1.TabIndex = 17;
+            // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            tableLayoutPanel4.ColumnCount = 1;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel4.Controls.Add(tableLayoutPanel2, 0, 2);
+            tableLayoutPanel4.Controls.Add(tableLayoutPanel3, 0, 0);
+            tableLayoutPanel4.Controls.Add(pictureBox1, 0, 1);
+            tableLayoutPanel4.Location = new Point(12, 47);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 3;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            tableLayoutPanel4.Size = new Size(707, 659);
+            tableLayoutPanel4.TabIndex = 19;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 128F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 128F));
+            tableLayoutPanel2.Controls.Add(indexLabel, 1, 0);
+            tableLayoutPanel2.Controls.Add(next, 2, 0);
+            tableLayoutPanel2.Controls.Add(prev, 0, 0);
+            tableLayoutPanel2.Location = new Point(3, 622);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(701, 34);
+            tableLayoutPanel2.TabIndex = 20;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 2;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 64F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Controls.Add(patientLabel, 0, 0);
+            tableLayoutPanel3.Controls.Add(patientNameLabel, 1, 0);
+            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 1;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(698, 20);
+            tableLayoutPanel3.TabIndex = 18;
+            // 
+            // patientLabel
+            // 
+            patientLabel.Anchor = AnchorStyles.Left;
+            patientLabel.AutoSize = true;
+            patientLabel.Location = new Point(3, 0);
+            patientLabel.Name = "patientLabel";
+            patientLabel.Size = new Size(54, 20);
+            patientLabel.TabIndex = 12;
+            patientLabel.Text = "Hasta: ";
+            // 
+            // patientNameLabel
+            // 
+            patientNameLabel.Anchor = AnchorStyles.Left;
+            patientNameLabel.AutoSize = true;
+            patientNameLabel.Location = new Point(67, 0);
+            patientNameLabel.Name = "patientNameLabel";
+            patientNameLabel.Size = new Size(35, 20);
+            patientNameLabel.TabIndex = 13;
+            patientNameLabel.Text = "doe";
+            patientNameLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBox1.Location = new Point(3, 33);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(701, 583);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
+            pictureBox1.Click += PictureBox_Click;
+            // 
             // PatientFlagger2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1262, 721);
-            Controls.Add(patientListView);
+            ClientSize = new Size(1262, 753);
+            Controls.Add(tableLayoutPanel4);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(PreviousPatientButton);
-            Controls.Add(saveImageAttributes_Button);
-            Controls.Add(imageTextBox);
-            Controls.Add(imageListBox);
-            Controls.Add(patientNameLabel);
-            Controls.Add(patientLabel);
             Controls.Add(nextPatientButton);
-            Controls.Add(indexLabel);
-            Controls.Add(savePatient_Button);
-            Controls.Add(label1);
-            Controls.Add(patientTextBox);
-            Controls.Add(prev);
-            Controls.Add(next);
-            Controls.Add(pictureBox1);
             Icon = Properties.Resources.icon;
             Name = "PatientFlagger2";
             FormClosing += PatientFlagger2_FormClosing;
             Load += Form2_Load;
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            tableLayoutPanel3.ResumeLayout(false);
+            tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         private void selectPatientLabel_Click(object sender, EventArgs e)
@@ -240,18 +317,13 @@ namespace YProjectMedicalFlagger2
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        private PictureBox pictureBox1;
+#endregion
         private Button next;
         private Button prev;
         private RichTextBox patientTextBox;
-        private Label label1;
         private Button savePatient_Button;
         private Label indexLabel;
         private Button nextPatientButton;
-        private Label patientLabel;
-        private Label patientNameLabel;
         private CheckedListBox imageListBox;
         private RichTextBox imageTextBox;
         private Button saveImageAttributes_Button;
@@ -259,5 +331,12 @@ namespace YProjectMedicalFlagger2
         private ListView patientListView;
         private ColumnHeader Categories;
         private ColumnHeader Values;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel4;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TableLayoutPanel tableLayoutPanel3;
+        private Label patientLabel;
+        private Label patientNameLabel;
+        private PictureBox pictureBox1;
     }
 }
