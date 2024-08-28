@@ -519,7 +519,7 @@ namespace YProjectMedicalFlagger2
 
         private void ListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-           
+
             ListViewHitTestInfo hitTestInfo = patientListView.HitTest(e.Location);
             if (hitTestInfo.SubItem != null && hitTestInfo.Item.SubItems.IndexOf(hitTestInfo.SubItem) == 1)
             {
@@ -532,6 +532,26 @@ namespace YProjectMedicalFlagger2
                 editBox.Visible = true;
                 editBox.BringToFront();
                 editBox.Focus();
+            }
+        }
+
+        private void patientListView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (patientListView.SelectedItems.Count > 0)
+                {
+                    ListViewItem selectedItem = patientListView.SelectedItems[0];
+                    subItemToEdit = selectedItem.SubItems[1] == null ? new() : selectedItem.SubItems[1];
+                    Rectangle subItemBounds = subItemToEdit.Bounds;
+                    Point subItemLocation = patientListView.PointToScreen(subItemBounds.Location);
+                    Point editBoxLocation = this.PointToClient(subItemLocation);
+                    editBox.Bounds = new Rectangle(editBoxLocation, subItemBounds.Size);
+                    editBox.Text = subItemToEdit.Text;
+                    editBox.Visible = true;
+                    editBox.BringToFront();
+                    editBox.Focus();
+                }
             }
         }
 
@@ -552,13 +572,18 @@ namespace YProjectMedicalFlagger2
         {
             if (subItemToEdit != null)
             {
-                isDataChanged = true;
-                subItemToEdit.Text = editBox.Text;
+                if (editBox.Text != subItemToEdit.Text)
+                {
+                    subItemToEdit.Text = editBox.Text;
+                    isDataChanged = true;
+                }
+
+
                 editBox.Visible = false;
                 subItemToEdit = null;
+
             }
         }
-
 
 
         private void PatientFlagger2_FormClosing(object sender, FormClosingEventArgs e)
@@ -611,24 +636,11 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        private void patientListView_KeyPress(object sender, KeyPressEventArgs e)
+        private void patientListView_Resize(object sender, EventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                if (patientListView.SelectedItems.Count > 0)
-                {
-                    ListViewItem selectedItem = patientListView.SelectedItems[0];
-                    subItemToEdit = selectedItem.SubItems[1];
-                    Rectangle subItemBounds = subItemToEdit.Bounds;
-                    Point subItemLocation = patientListView.PointToScreen(subItemBounds.Location);
-                    Point editBoxLocation = this.PointToClient(subItemLocation);
-                    editBox.Bounds = new Rectangle(editBoxLocation, subItemBounds.Size);
-                    editBox.Text = subItemToEdit.Text;
-                    editBox.Visible = true;
-                    editBox.BringToFront();
-                    editBox.Focus();
-                }
-            }
+            int totalWidth = patientListView.ClientSize.Width;
+            patientListView.Columns[0].Width = totalWidth / 2;
+            patientListView.Columns[1].Width = totalWidth / 2;
         }
     }
 
