@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.VisualBasic.Logging;
 
 namespace YProjectMedicalFlagger2
 {
@@ -136,6 +137,7 @@ namespace YProjectMedicalFlagger2
             }
         }
 
+        // Update the InitializeEditBox method to create a new TextBox for each patient
         private void InitializeEditBox()
         {
             editBox = new TextBox();
@@ -250,6 +252,7 @@ namespace YProjectMedicalFlagger2
             return fields.ToArray();
         }
 
+        // Update the SetIfSaved method to clear the editBox when patient data is not found
         private void SetIfSaved()
         {
             if (isSaved && dataMap.TryGetValue(currentPatientName, out StringNode? value))
@@ -267,6 +270,7 @@ namespace YProjectMedicalFlagger2
                     }
                 }
                 patientTextBox.Text = node.description;
+                editBox.Clear(); // Clear the editBox for the current patient
             }
             else
             {
@@ -277,9 +281,15 @@ namespace YProjectMedicalFlagger2
                 {
                     if (item.SubItems.Count > 1)
                     {
-                        item.SubItems.RemoveAt(1);
+                        //item.SubItems.RemoveAt(1);
+                    }
+
+                    if (item.SubItems.Count <= 1)
+                    {
+                       item.SubItems.Add("");
                     }
                 }
+                editBox.Clear(); // Clear the editBox when patient data is not found
             }
         }
 
@@ -534,7 +544,6 @@ namespace YProjectMedicalFlagger2
                 editBox.Focus();
             }
         }
-
         private void patientListView_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -542,15 +551,22 @@ namespace YProjectMedicalFlagger2
                 if (patientListView.SelectedItems.Count > 0)
                 {
                     ListViewItem selectedItem = patientListView.SelectedItems[0];
-                    subItemToEdit = selectedItem.SubItems[1] == null ? new() : selectedItem.SubItems[1];
-                    Rectangle subItemBounds = subItemToEdit.Bounds;
-                    Point subItemLocation = patientListView.PointToScreen(subItemBounds.Location);
-                    Point editBoxLocation = this.PointToClient(subItemLocation);
-                    editBox.Bounds = new Rectangle(editBoxLocation, subItemBounds.Size);
-                    editBox.Text = subItemToEdit.Text;
-                    editBox.Visible = true;
-                    editBox.BringToFront();
-                    editBox.Focus();
+                    if (selectedItem.SubItems.Count > 1)
+                    {
+                        subItemToEdit = selectedItem.SubItems[1];
+                        Rectangle subItemBounds = subItemToEdit.Bounds;
+                        Point subItemLocation = patientListView.PointToScreen(subItemBounds.Location);
+                        Point editBoxLocation = this.PointToClient(subItemLocation);
+                        editBox.Bounds = new Rectangle(editBoxLocation, subItemBounds.Size);
+                        editBox.Text = subItemToEdit.Text;
+                        editBox.Visible = true;
+                        editBox.BringToFront();
+                        editBox.Focus();
+                    }
+                    else
+                    {
+                        MessageBox.Show("No subitems found for the selected item. count: " + selectedItem.SubItems.Count);
+                    }
                 }
             }
         }

@@ -35,16 +35,18 @@
             // 
             // listBox1
             // 
+            listBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             listBox1.FormattingEnabled = true;
-            listBox1.Location = new Point(12, 54);
+            listBox1.Location = new Point(8, 50);
             listBox1.Name = "listBox1";
-            listBox1.Size = new Size(576, 364);
+            listBox1.Size = new Size(588, 424);
             listBox1.TabIndex = 0;
             listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             // 
             // selectButton
             // 
-            selectButton.Location = new Point(694, 389);
+            selectButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            selectButton.Location = new Point(694, 445);
             selectButton.Name = "selectButton";
             selectButton.Size = new Size(94, 29);
             selectButton.TabIndex = 1;
@@ -55,31 +57,29 @@
             // selectPatientLabel
             // 
             selectPatientLabel.AutoSize = true;
-            selectPatientLabel.Location = new Point(12, 31);
+            selectPatientLabel.Location = new Point(12, 9);
             selectPatientLabel.Name = "selectPatientLabel";
             selectPatientLabel.Size = new Size(100, 20);
             selectPatientLabel.TabIndex = 2;
             selectPatientLabel.Text = "Hasta Seçiniz:";
-            
             // 
             // PatientSelect
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 427);
-            Controls.Add(selectPatientLabel);
-            Controls.Add(selectButton);
+            ClientSize = new Size(800, 496);
             Controls.Add(listBox1);
+            Controls.Add(selectButton);
+            Controls.Add(selectPatientLabel);
+            Icon = Properties.Resources.icon;
             Name = "PatientSelect";
             Text = "Hasta Seçici";
-            this.Icon = Properties.Resources.icon;
-
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-        
+
         private ListBox listBox1;
         private Button selectButton;
         private Label selectPatientLabel;
