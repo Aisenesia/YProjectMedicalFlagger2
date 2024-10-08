@@ -392,35 +392,35 @@ namespace YProjectMedicalFlagger2
             isDataChanged = false;
             TakeBackups(saveFile);
 
-            if (isSaved)
+            bool isUpdated = false; // Flag to check if patient data is updated
+
+            string[] lines = File.ReadAllLines(saveFile);
+            for (int i = 0; i < lines.Length; i++)
             {
-                // Update existing patient data
-                string[] lines = File.ReadAllLines(saveFile);
-                for (int i = 0; i < lines.Length; i++)
+                string[] fields = ParseCsvLine(lines[i]);
+
+                // If patient already exists, update their data
+                if (fields[0] == currentPatientName)
                 {
-                    StreamReader reader = new(saveFile);
-                    for (int j = 1; i < j; i++)
-                    {
-                        reader.ReadLine();
-                    }
-                    string line = reader.ReadLine();
-                    string[] fields = ParseCsvLine(line);
-                    //string[] fields = ParseCsvLine(lines[i]);
-                    if (fields[0] == currentPatientName)
-                    {
-                        lines[i] = data;
-                        break;
-                    }
+                    lines[i] = data;
+                    isUpdated = true;
+                    break;
                 }
+            }
+
+            if (isUpdated)
+            {
+                // Write updated lines back to file
                 File.WriteAllLines(saveFile, lines);
             }
             else
             {
-                // Save new patient data
+                // Add new patient data
                 using StreamWriter writer = new(saveFile, true);
                 writer.WriteLine(data);
             }
         }
+
 
         private void SaveImage()
         {
@@ -544,7 +544,7 @@ namespace YProjectMedicalFlagger2
             // Check if we are at the first patient
             if (index < 0)
             {
-                MessageBox.Show("No previous patients to show.");
+                MessageBox.Show("Gösterilecek hasta kalmadı.");
                 index = 0; // Ensure the index doesn't go below 0
                 return;
             }
