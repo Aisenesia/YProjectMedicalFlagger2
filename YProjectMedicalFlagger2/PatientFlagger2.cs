@@ -6,9 +6,15 @@ namespace YProjectMedicalFlagger2
 {
     public partial class PatientFlagger2 : Form
     {
-        private static readonly string filesPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "files");
+        private static readonly string? filesPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "files");
         private string directoryPath;
         private List<string> files;
+
+        // Settings
+        private bool autoSaveWithNavigate = false;
+        private const string patientSaveFileName = "Hastalar.csv";
+        private const string imageSaveFileName = "Resimler.csv";
+        private const string imageCategoryFileName = "Kategoriler.csv";
 
         private readonly string[] filesFromBefore; // All the files in the directory
         private int index; // Current patient's index in the files array
@@ -35,8 +41,9 @@ namespace YProjectMedicalFlagger2
         // Set to false to disable backups
         private const bool takeBackups = true;
 
-        public static string FilesPath => filesPath;
+        public static string? FilesPath => filesPath;
 
+        // take the file name and the files list from patient select form as parameters
         public PatientFlagger2(string fileName, string[] filesFromBefore, int index)
         {
 
@@ -48,7 +55,7 @@ namespace YProjectMedicalFlagger2
 
             InitializeComponent();
             InitializeFileList();
-            FetchImageCategories();
+            FetchCategories();
             InitializeImageList();
             patientNameLabel.Text = currentPatientName;
             InitializeListBox();
@@ -58,19 +65,23 @@ namespace YProjectMedicalFlagger2
             CheckForSavedFile();
             SetIfSaved();
         }
+
+
+        // Initialize the file list and the save file for accessing patient data
         private void InitializeFileList()
         {
             directoryPath = Path.Combine(FilesPath, currentPatientName);
             files = new List<string>(Directory.GetFiles(directoryPath));
-            saveFile = Path.Combine(FilesPath, "Hastalar.csv");
-            imageSaveFile = Path.Combine(directoryPath, "Resimler.csv");
-            imageCategoryFile = Path.Combine(FilesPath, "Kategoriler.csv");
+            saveFile = Path.Combine(FilesPath, patientSaveFileName);
+            imageSaveFile = Path.Combine(directoryPath, imageSaveFileName);
+            imageCategoryFile = Path.Combine(FilesPath, imageCategoryFileName);
 
             EnsureFileExists(saveFile); // absolutely required
             EnsureFileExists(imageCategoryFile); // absolutely required
-            //EnsureFileExists(imageSaveFile);
+            
         }
 
+        // Fetch image files from the directory and initialize the image list
         private void InitializeImageList()
         {
             imageFiles = files.Where(file => file.EndsWith(".png") || file.EndsWith(".jpg")).ToArray();
@@ -78,6 +89,7 @@ namespace YProjectMedicalFlagger2
             currentIndex = 0;
         }
 
+        // Display the current image in the picture box
         private void DisplayCurrentImage()
         {
             if (imageFiles.Length > 0 && currentIndex >= 0 && currentIndex < imageFiles.Length)
@@ -95,18 +107,13 @@ namespace YProjectMedicalFlagger2
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            //label1.Text = "Ek notlar:";
             DisplayCurrentImage();
         }
 
-        private void InitializeListBox()
+        private void InitializeListBox() // get categories from the first line of the save file, initialize patient field names.
         {
             try
             {
-                string line = File.ReadLines(saveFile).First();
-                string[] firstLine = line.Split(';');
-                fileCategories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray();
-
                 foreach (string data in fileCategories)
                 {
                     patientListView.Items.Add(data);
@@ -120,7 +127,7 @@ namespace YProjectMedicalFlagger2
 
         }
 
-        private void InitializeImageListBox()
+        private void InitializeImageListBox() // get categories from the first line of the categories file, initialize patient field names.
         {
             try
             {
@@ -135,7 +142,7 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        // Update the InitializeEditBox method to create a new TextBox for each patient
+        // Creates a dynamic textBox component that will be used to enter string data for patient fields
         private void InitializeEditBox()
         {
             editBox = new TextBox();
@@ -147,6 +154,7 @@ namespace YProjectMedicalFlagger2
             Controls.Add(editBox);
         }
 
+        // Access the save file and check if the current patient data is saved
         private void CheckForSavedFile()
         {
             dataMap.Clear();
@@ -173,8 +181,14 @@ namespace YProjectMedicalFlagger2
             }
         }
 
-        private void FetchImageCategories()
+        private void FetchCategories()
         {
+            // patient categories
+            string patientLine = File.ReadLines(saveFile).First();
+            string[] firstLine = patientLine.Split(';');
+            fileCategories = firstLine.Skip(1).Take(firstLine.Length - 2).ToArray();
+
+            // image categories
             using StreamReader reader = new(imageCategoryFile, Encoding.UTF8);
             string? line = reader.ReadLine();
             if (line != null)
@@ -206,7 +220,7 @@ namespace YProjectMedicalFlagger2
                     bool[] data = new bool[fields.Length - 2];
                     for (int i = 1; i < fields.Length - 2; i++)
                     {
-                        Console.WriteLine("index: " + i + "Field: " + fields[i]);
+                        
                         // Attempt to parse each field to boolean safely
                         if (bool.TryParse(fields[i], out bool result))
                         {
@@ -507,12 +521,12 @@ namespace YProjectMedicalFlagger2
 
         private void NextPatientButton_Click(object sender, EventArgs e)
         {
-
-            // SavePatient();
-            // SaveImage();
-
-            // Increment the index to move to the next patient
-
+            if (autoSaveWithNavigate)
+            {
+                SavePatient();
+                SaveImage();
+            }
+           
             index++;
 
             // Check if we are at the last patient
@@ -533,9 +547,10 @@ namespace YProjectMedicalFlagger2
 
         private void PreviousPatientButton_Click(object sender, EventArgs e)
         {
-            // Save current patient data before moving to the previous one
-            //SavePatient();
-            //SaveImage();
+            if (autoSaveWithNavigate) {
+                SavePatient();
+                SaveImage();
+            }
 
             // Decrement the index to move to the previous patient
 
@@ -561,13 +576,19 @@ namespace YProjectMedicalFlagger2
         }
         private void PreviousImageButton_Click(object sender, EventArgs e)
         {
-            SaveImage();
+            if (autoSaveWithNavigate)
+            {
+                SaveImage();
+            }
             currentIndex = currentIndex > 0 ? currentIndex - 1 : imageFiles.Length - 1;
             DisplayCurrentImage();
         }
         private void NextImageButton_Click(object sender, EventArgs e)
         {
-            SaveImage();
+            if (autoSaveWithNavigate)
+            {
+                SaveImage();
+            }
             currentIndex = currentIndex < imageFiles.Length - 1 ? currentIndex + 1 : 0;
 
             DisplayCurrentImage();
