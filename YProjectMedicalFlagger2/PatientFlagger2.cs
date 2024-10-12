@@ -12,6 +12,7 @@ namespace YProjectMedicalFlagger2
 
         // Settings
         private bool autoSaveWithNavigate = false;
+        // private bool showSaveDialogWithNavigate = false;
         private const string patientSaveFileName = "Hastalar.csv";
         private const string imageSaveFileName = "Resimler.csv";
         private const string imageCategoryFileName = "Kategoriler.csv";
@@ -389,54 +390,73 @@ namespace YProjectMedicalFlagger2
         }
 
 
-        private void SavePatient()
+  private void SavePatient()
+{
+    // Prepare data to save
+    string data = currentPatientName + ";";
+    for (int i = 0; i < patientListView.Items.Count; i++)
+    {
+        ListViewItem item = patientListView.Items[i];
+        string subItem = item.SubItems.Count > 1 ? item.SubItems[1].Text : "";
+        data += subItem + ";";
+    }
+
+    string description = patientTextBox.Text;
+    data += description;
+
+    isDataChanged = false;
+    TakeBackups(saveFile);
+
+    bool isUpdated = false; // Flag to check if patient data is updated
+
+    string[] lines = File.ReadAllLines(saveFile);
+    for (int i = 0; i < lines.Length; i++)
+    {
+        string[] fields = ParseCsvLine(lines[i]);
+
+        // If patient already exists, update their data
+        if (fields[0] == currentPatientName)
         {
-            // Prepare data to save
-            string data = currentPatientName + ";";
-            for (int i = 0; i < patientListView.Items.Count; i++)
+            lines[i] = data;
+            isUpdated = true;
+            break;
+        }
+    }
+
+    if (isUpdated)
+    {
+        // Write updated lines back to file
+        File.WriteAllLines(saveFile, lines);
+    }
+    else
+    {
+        // Add new patient data
+        using (FileStream fs = new FileStream(saveFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+        {
+            // Move to the end of the file
+            fs.Seek(0, SeekOrigin.End);
+
+            // Check if the file already ends with a newline
+            if (fs.Length > 0)
             {
-                ListViewItem item = patientListView.Items[i];
-                string subItem = item.SubItems.Count > 1 ? item.SubItems[1].Text : "";
-                data += subItem + ";";
-            }
-
-            string description = patientTextBox.Text;
-            data += description;
-
-            isDataChanged = false;
-            TakeBackups(saveFile);
-
-            bool isUpdated = false; // Flag to check if patient data is updated
-
-            string[] lines = File.ReadAllLines(saveFile);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string[] fields = ParseCsvLine(lines[i]);
-
-                // If patient already exists, update their data
-                if (fields[0] == currentPatientName)
+                fs.Seek(-1, SeekOrigin.End); // Move one character back from the end
+                int lastByte = fs.ReadByte();
+                
+                // If the last byte is not a newline, write a newline
+                if (lastByte != '\n')
                 {
-                    lines[i] = data;
-                    isUpdated = true;
-                    break;
+                    fs.WriteByte((byte)'\n');
                 }
             }
 
-            if (isUpdated)
+            using (StreamWriter writer = new StreamWriter(fs))
             {
-                // Write updated lines back to file
-                File.WriteAllLines(saveFile, lines);
-            }
-            else
-            {
-                // Add new patient data
-                using StreamWriter writer = new(saveFile, true);
                 writer.WriteLine(data);
             }
         }
-
-
-        private void SaveImage()
+    }
+}
+     private void SaveImage()
         {
             string data = currentImageName + ";";
             for (int i = 0; i < imageListBox.Items.Count; i++)
@@ -682,12 +702,7 @@ namespace YProjectMedicalFlagger2
         {
             if (isDataChanged)
             {
-                DialogResult dialogResult = MessageBox.Show("Değişiklikler kaydedilsin mi?", "Kayıt", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    SavePatient();
-                    SaveImage();
-                }
+                SaveDialog();
             }
 
 
@@ -699,6 +714,18 @@ namespace YProjectMedicalFlagger2
 
 
         }
+
+        private void SaveDialog()
+        {
+            DialogResult dialogResult = MessageBox.Show("Değişiklikler kaydedilsin mi?", "Kayıt", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                SavePatient();
+                SaveImage();
+            }
+
+        }
+
 
         private void imageListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
